@@ -1,0 +1,28 @@
+# KITAQ ONLINE — .htaccess root untuk shared hosting (mis. Hostinger) bila KODE ada di document root.
+# Contoh: kode di domains/<domain>/public_html/kitaq, document root subdomain = folder itu.
+#
+# Semua permintaan diarahkan ke folder public/ (satu-satunya yang boleh diakses web). Karena itu
+# .env, app/, vendor/, storage/, database/, composer.json, dll. TIDAK pernah bisa dibuka dari browser:
+# /.env → public/.env (tidak ada) → 404 dari Laravel.
+#
+# Bila document root bisa diarahkan langsung ke folder public/ (disarankan), berkas ini tidak diperlukan.
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Teruskan header Authorization (konsisten dengan public/.htaccess)
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Selain yang sudah di dalam public/, semuanya dipetakan ke public/
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Lapis pengaman tambahan bila mod_rewrite tidak aktif: tolak berkas rahasia & kode.
+<IfModule mod_authz_core.c>
+    <FilesMatch "^\.(?!well-known)|\.(env|log|sql|md|lock|json|yml|yaml|sh|ps1|bak|zip)$|^(artisan|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|vite\.config\.js)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>

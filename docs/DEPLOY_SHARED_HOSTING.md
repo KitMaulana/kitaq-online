@@ -85,3 +85,28 @@ Aktifkan sementara `KITAQ_INSTALL_TOKEN=<acak panjang>` di `.env`, buka `https:/
 | "419 Page Expired" | Domain di `APP_URL` beda dengan yang dibuka; `SESSION_SECURE_COOKIE=true` tapi dibuka via http |
 | Lambat saat banyak siswa | Uji beban, naikkan paket, bagi sesi, naikkan `KITAQ_HEARTBEAT_SEC` ke 20–25 |
 | Gambar soal tidak tampil | `storage:link` gagal → aktifkan rute penyaji file |
+
+---
+
+## 10. Hostinger: pasang lewat Git + `.htaccess` root
+
+Cocok bila **document root tidak bisa diarahkan ke `public/`** (mis. subdomain `kitaq.domain.id` → folder `domains/domain.id/public_html/kitaq`). Kode ditarik langsung ke folder itu, dan `.htaccess` di root mengarahkan semua permintaan ke `public/` serta memblokir `.env`, `app/`, `vendor/`, `storage/`, dll.
+
+1. **Subdomain & SSL**: hPanel → Domain → Subdomain (folder `public_html/kitaq`), aktifkan SSL + "Force HTTPS". Versi PHP **8.2+** (Advanced → PHP Configuration). Folder harus **kosong** sebelum `git clone`.
+2. **Database**: hPanel → Databases → MySQL. Catat nama DB, user, dan password.
+3. **Tarik kode** (SSH: Advanced → SSH Access):
+   ```bash
+   cd ~/domains/<domain>/public_html/kitaq
+   git clone https://github.com/<akun>/kitaq-online.git .
+   ```
+   Alternatif tanpa terminal: hPanel → Advanced → **Git** → isi URL repositori, branch `main`, folder `kitaq` → Create → Deploy.
+4. **`.env`**: `cp .env.example .env`, lalu isi `APP_URL=https://<subdomain>`, `APP_ENV=production`, `APP_DEBUG=false`, `DB_HOST=localhost`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `SESSION_SECURE_COOKIE=true`.
+5. **Pasang**: `bash scripts/deploy-hostinger.sh` (composer install produksi, `key:generate`, `migrate --force`, `optimize`).
+   Pertama kali saja: `php artisan db:seed --class=SuperAdminSeeder --force`.
+6. **Cron** (hPanel → Advanced → Cron Jobs, tiap menit):
+   `/usr/bin/php /home/<user>/domains/<domain>/public_html/kitaq/artisan schedule:run >> /dev/null 2>&1`
+7. **Uji**: `https://<subdomain>/` tampil, `/.env` dan `/composer.json` harus **404/403**, login `/admin/login`, lalu ganti password Super Admin.
+
+**Memperbarui**: `git pull && bash scripts/deploy-hostinger.sh` (jangan saat ada ujian berlangsung).
+
+Catatan: `public/build/` (hasil `npm run build`) ikut di repositori karena tidak ada Node di hosting. Jalankan `npm run build` di laptop dan commit sebelum push bila JS/CSS berubah. Bila `composer` tidak tersedia di paket hosting Anda, unggah ZIP dari `scripts/build-release.ps1` (sudah berisi `vendor/`).
