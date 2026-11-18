@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="id" translate="no" class="notranslate">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="google" content="notranslate">
+<meta name="robots" content="noindex">
+<title>Cek Perangkat — KITAQ ONLINE</title>
+<style>
+:root{--primary:#022684;--primary-soft:#e6ecfb;--accent:#F92019;--accent-soft:#feeceb;--info:#0271D3;--success:#16A34A;--success-soft:#e8f6ee;--warning:#F59E0B;--warning-soft:#fff4dc;--bg:#f1f5fb;--surface:#fff;--surface-2:#eef2f8;--border:#dde3ee;--text:#0f172a;--text-muted:#5b6478}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:560px;margin:0 auto;padding:22px 16px 340px}
+.logo{display:block;width:230px;margin:6px auto 14px}
+h1{font-size:22px;margin:0 0 4px;text-align:center}.sub{color:var(--text-muted);text-align:center;margin:0 0 18px;font-size:14px}
+.sum{border-radius:16px;padding:16px;margin-bottom:14px;font-weight:700;display:flex;gap:12px;align-items:center}
+.sum.ok{background:var(--success-soft);color:#0f6b33}.sum.bad{background:var(--accent-soft);color:#a3120d}.sum.wait{background:var(--surface-2);color:var(--text-muted)}
+.sum .dot{width:14px;height:14px;border-radius:50%;background:currentColor;flex:none}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:4px 14px;margin-bottom:14px}
+.row{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start}.row:last-child{border:0}
+.ic{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;font-weight:800;font-size:15px}
+.ic.ok{background:var(--success-soft);color:var(--success)}.ic.bad{background:var(--accent-soft);color:var(--accent)}.ic.warn{background:var(--warning-soft);color:#b26a00}.ic.wait{background:var(--surface-2);color:var(--text-muted)}
+.row b{display:block;font-size:14.5px}.row small{color:var(--text-muted);font-size:12.5px;line-height:1.45;display:block;margin-top:2px}
+h2{font-size:15px;margin:20px 0 8px}
+.btn{width:100%;height:50px;border:0;border-radius:14px;background:var(--primary);color:#fff;font-weight:700;font-size:15px;margin-top:6px;cursor:pointer}
+.btn.sec{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.foot{text-align:center;color:var(--text-muted);font-size:11.5px;margin-top:22px}
+/* Keyboard Virtual KITAQ — memakai token dari resources/css/kitaq-theme.css */
+.kq-noselect, .kq-noselect * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+html.kq-blank body { visibility: hidden; }
+
+.kq-textbox {
+  min-height: 52px; padding: 12px 14px; border: 2px solid var(--border); border-radius: 14px;
+  background: var(--surface); color: var(--text); font-size: 17px; line-height: 1.6;
+  white-space: pre-wrap; word-break: break-word; cursor: text; touch-action: manipulation;
+  -webkit-user-select: none; user-select: none;
+}
+.kq-textbox.multiline { min-height: 140px; }
+.kq-textbox.token { text-align: center; font: 800 30px/1.4 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .35em; min-height: 64px; }
+.kq-textbox.active { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-soft); }
+.kq-textbox .kq-ph { color: var(--text-muted); }
+.kq-caret { display: inline-block; width: 2px; height: 1.25em; margin: 0 -1px; vertical-align: text-bottom; background: var(--primary); animation: kq-blink 1s steps(1) infinite; }
+@keyframes kq-blink { 50% { opacity: 0; } }
+
+.kq-kb {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+  padding: 6px 4px calc(8px + env(safe-area-inset-bottom)); background: var(--kb-bg, #d7dce6);
+  border-top: 1px solid var(--border); touch-action: manipulation;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+[data-theme="dark"] .kq-kb { --kb-bg: #1b2335; }
+.kq-kb[hidden] { display: none; }
+.kq-kb-bar { display: flex; align-items: center; justify-content: space-between; padding: 2px 6px 6px; }
+.kq-kb-brand { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+.kq-kb-row { display: flex; gap: 5px; margin: 0 0 7px; justify-content: center; }
+.kq-key {
+  flex: 1 1 0; min-width: 0; height: 44px; border: 0; border-radius: 8px; background: var(--surface); color: var(--text);
+  font: 500 19px/1 Inter, system-ui, sans-serif; box-shadow: 0 1px 0 rgba(0,0,0,.25); cursor: pointer; padding: 0;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.kq-key.pressed { background: var(--primary-soft); transform: translateY(1px); }
+.kq-key.fn { background: var(--kb-fn, #b4bccb); font-size: 15px; font-weight: 600; }
+[data-theme="dark"] .kq-key.fn { --kb-fn: #33405a; }
+.kq-key.k-space { flex: 4 1 0; font-size: 14px; }
+.kq-key.k-shift, .kq-key.k-bksp { flex: 1.4 1 0; }
+.kq-key.k-123, .kq-key.k-abc, .kq-key.k-sym { flex: 1.4 1 0; font-size: 13px; }
+.kq-key.k-enter { flex: 1.4 1 0; background: var(--primary); color: #fff; }
+.kq-key.k-enter:disabled { opacity: .45; }
+.kq-key.k-shift.on { background: var(--surface); color: var(--primary); }
+.kq-key.k-shift.caps { box-shadow: inset 0 -3px 0 var(--primary); }
+.kq-key.k-done { flex: 0 0 auto; height: 30px; padding: 0 14px; background: transparent; color: var(--primary); box-shadow: none; font-size: 14px; }
+.kq-kb-row.kq-pad .kq-key { height: 50px; font-size: 22px; }
+html.kq-kb-open .kq-exam-scroll { padding-bottom: 300px; }
+
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <img class="logo" src="images/kitaq-online-logo.png" alt="KITAQ ONLINE">
+  <h1>Cek Perangkat</h1>
+  <p class="sub">Pastikan HP/laptop siap sebelum hari ujian. Tidak ada data yang dikirim selain uji koneksi ke server.</p>
+  <div class="sum wait" id="sum"><span class="dot"></span><span id="sumT">Memeriksa…</span></div>
+  <div class="card" id="list"></div>
+  <h2>Coba Keyboard KITAQ</h2>
+  <p class="sub" style="text-align:left;margin-bottom:8px">Saat ujian, soal isian diketik dengan keyboard ini. Keyboard HP tidak akan muncul.</p>
+  <div id="tb"></div>
+  <button class="btn sec" id="again" type="button">Periksa ulang</button>
+  <div class="foot">KITAQ ONLINE · © 2026 CiptaKita.id — Solusi Digitalmu, dari kita!</div>
+</div>
+<div id="kb"></div>
+<script>
+(function(){
+  'use strict';
+  /* platform.js (disalin dari resources/js/shield/platform.js) */
+  /**
+ * KITAQ Shield — deteksi platform & kemampuan browser.
+ * Dipakai untuk memilih aturan per platform (Android, iOS/iPadOS, HarmonyOS, desktop).
+ * Catatan: User-Agent bisa dipalsukan. Hasil ini untuk menyesuaikan perilaku dan
+ * pencatatan, BUKAN satu-satunya dasar keputusan keamanan (server tetap memeriksa).
+ */
+
+function detectPlatform(nav = navigator, win = window) {
+  const ua = nav.userAgent || '';
+  const touch = (nav.maxTouchPoints || 0) > 1;
+
+  let os = 'other';
+  if (/OpenHarmony|ArkWeb/i.test(ua)) os = 'harmony_next';          // HarmonyOS NEXT / 5+ (ArkWeb, berbasis Chromium)
+  else if (/HarmonyOS/i.test(ua)) os = 'harmony';                    // HarmonyOS 2–4 (kompatibel Android)
+  else if (/Android/i.test(ua)) os = 'android';
+  else if (/iPhone|iPod/i.test(ua)) os = 'ios';
+  else if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && touch)) os = 'ipados'; // iPadOS menyamar sebagai Mac
+  else if (/Windows/i.test(ua)) os = 'windows';
+  else if (/CrOS/i.test(ua)) os = 'chromeos';
+  else if (/Macintosh/i.test(ua)) os = 'macos';
+  else if (/Linux/i.test(ua)) os = 'linux';
+
+  let browser = 'other';
+  if (/; wv\)|FBAN|FBAV|Instagram|Line\/|WhatsApp|TikTok|Snapchat/i.test(ua)) browser = 'webview';
+  else if (/EdgA|EdgiOS|Edg\//i.test(ua)) browser = 'edge';
+  else if (/OPR\/|OPT\/|OPX\/|Opera/i.test(ua)) browser = 'opera';
+  else if (/SamsungBrowser/i.test(ua)) browser = 'samsung';
+  else if (/HuaweiBrowser|HBPC|HMSCore/i.test(ua)) browser = 'huawei';
+  else if (/YaBrowser/i.test(ua)) browser = 'yandex';
+  else if (/UCBrowser|UCWEB/i.test(ua)) browser = 'uc';
+  else if (/MiuiBrowser|XiaoMi/i.test(ua)) browser = 'miui';
+  else if (/Firefox|FxiOS/i.test(ua)) browser = 'firefox';
+  else if (/DuckDuckGo/i.test(ua)) browser = 'duckduckgo';
+  else if (nav.brave && typeof nav.brave.isBrave === 'function') browser = 'brave';
+  else if (/CriOS/i.test(ua)) browser = 'chrome';                    // Chrome iOS (mesin WebKit)
+  else if (/Chrome\//i.test(ua)) browser = 'chrome';
+  else if (/Safari\//i.test(ua) && /Version\//i.test(ua)) browser = 'safari';
+
+  const mobile = ['android', 'harmony', 'harmony_next', 'ios'].includes(os);
+  const tablet = os === 'ipados' || (os === 'android' && !/Mobile/i.test(ua));
+  const device = tablet ? 'tablet' : mobile ? 'phone' : 'desktop';
+
+  const doc = win.document;
+  const standalone =
+    nav.standalone === true ||
+    (win.matchMedia && (win.matchMedia('(display-mode: standalone)').matches ||
+                        win.matchMedia('(display-mode: fullscreen)').matches));
+
+  return {
+    os, browser, device,
+    isMobileLike: device !== 'desktop',
+    isApple: os === 'ios' || os === 'ipados',
+    isHarmony: os === 'harmony' || os === 'harmony_next',
+    standalone: !!standalone,
+    caps: {
+      fullscreen: !!(doc.fullscreenEnabled || doc.webkitFullscreenEnabled) && os !== 'ios', // iPhone tidak mendukung fullscreen elemen
+      broadcastChannel: typeof win.BroadcastChannel === 'function',
+      visualViewport: !!win.visualViewport,
+      vibrate: typeof nav.vibrate === 'function',
+      beacon: typeof nav.sendBeacon === 'function',
+      screenExtended: 'isExtended' in (win.screen || {}),
+    },
+    ua,
+  };
+}
+
+/** Cocokkan platform dengan daftar browser yang diizinkan (dari config server). */
+function isBrowserAllowed(platform, allowList = ['chrome', 'safari', 'samsung', 'huawei']) {
+  if (platform.browser === 'webview') return false;
+  return allowList.includes(platform.browser);
+}
+
+  /* kitaq-keyboard.js (disalin dari resources/js/keyboard/kitaq-keyboard.js) */
+  /**
+ * Keyboard Virtual KITAQ + Kotak Jawaban KITAQ.
+ *
+ * Tujuan: saat soal terbuka, keyboard bawaan HP (Gboard, SwiftKey, Samsung Keyboard,
+ * keyboard iOS, keyboard Huawei/Celia — termasuk fitur AI, tulis-ulang, saran, dikte,
+ * dan papan klip) TIDAK PERNAH muncul.
+ *
+ * Caranya: halaman ujian tidak memakai <input>, <textarea>, atau contenteditable.
+ * Kotak jawaban adalah <div role="textbox"> biasa yang isinya dikelola JavaScript,
+ * dan huruf dimasukkan lewat tombol-tombol keyboard KITAQ di bawah layar. Karena tidak ada
+ * field teks, sistem operasi tidak punya alasan membuka keyboard-nya. Cara ini sama
+ * di Android, iOS/iPadOS, dan HarmonyOS karena hanya memakai HTML/CSS/JS standar.
+ *
+ * Tanpa koreksi otomatis, tanpa prediksi, tanpa tempel. Tekan lama ⌫ untuk hapus cepat.
+ */
+
+const SPECIAL = new Set(['@shift', '@bksp', '@space', '@enter', '@left', '@right', '@123', '@abc', '@sym', '@done']);
+
+const LAYOUTS = {
+  abc: [
+    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+    ['@shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '@bksp'],
+    ['@123', ',', '@left', '@space', '@right', '.', '@enter'],
+  ],
+  num: [
+    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+    ['-', '/', ':', ';', '(', ')', '&', '@', '"', "'"],
+    ['@sym', '.', ',', '?', '!', '%', '+', '=', '@bksp'],
+    ['@abc', '@left', '@space', '@right', '@enter'],
+  ],
+  sym: [
+    ['[', ']', '{', '}', '#', '^', '*', '<', '>', '~'],
+    ['_', '\\', '|', '$', '°', '•', '…', '“', '”', '–'],
+    ['@123', '√', 'π', '²', '³', '±', '×', '÷', '@bksp'],
+    ['@abc', '≤', '≥', '≠', '@space', '½', '@enter'],
+  ],
+  token: [
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+    ['J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R'],
+    ['S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
+    ['2', '3', '4', '5', '6', '7', '8', '9'],
+    ['@left', '@bksp', '@right'],
+  ],
+  pad: [
+    ['1', '2', '3'],
+    ['4', '5', '6'],
+    ['7', '8', '9'],
+    [',', '0', '-'],
+    ['@left', '@bksp', '@right'],
+  ],
+};
+
+const LABEL = {
+  '@shift': '⇧', '@bksp': '⌫', '@space': 'spasi', '@enter': '↵', '@left': '‹', '@right': '›',
+  '@123': '?123', '@abc': 'ABC', '@sym': '=\\<', '@done': 'Selesai',
+};
+const ARIA = {
+  '@shift': 'Huruf besar', '@bksp': 'Hapus', '@space': 'Spasi', '@enter': 'Baris baru', '@left': 'Kursor ke kiri',
+  '@right': 'Kursor ke kanan', '@123': 'Angka dan tanda baca', '@abc': 'Huruf', '@sym': 'Simbol', '@done': 'Tutup keyboard',
+};
+
+/* ------------------------------------------------------------------ */
+/* Kotak jawaban                                                       */
+/* ------------------------------------------------------------------ */
+class KitaqTextbox {
+  /**
+   * @param {HTMLElement} el
+   * @param {{value?:string,maxLength?:number,multiline?:boolean,mode?:'text'|'numeric'|'token',placeholder?:string,onChange?:(v:string)=>void,onActivate?:(tb:KitaqTextbox)=>void}} opts
+   */
+  constructor(el, opts = {}) {
+    this.el = el;
+    this.value = opts.value || '';
+    this.maxLength = opts.maxLength || 2000;
+    this.multiline = !!opts.multiline;
+    this.mode = opts.mode || 'text';
+    this.placeholder = opts.placeholder || 'Ketuk di sini untuk menjawab';
+    this.onChange = opts.onChange || (() => {});
+    this.onActivate = opts.onActivate || (() => {});
+    this.caret = this.value.length;
+    this.active = false;
+
+    el.classList.add('kq-textbox');
+    if (this.multiline) el.classList.add('multiline');
+    if (this.mode === 'token') el.classList.add('token');
+    el.setAttribute('role', 'textbox');
+    el.setAttribute('aria-multiline', String(this.multiline));
+    el.setAttribute('aria-readonly', 'false');
+    el.setAttribute('tabindex', '-1');      // tidak bisa difokus lewat Tab → tidak memicu keyboard OS
+    el.setAttribute('translate', 'no');
+    el.removeAttribute('contenteditable');
+    el.addEventListener('pointerdown', (e) => this._onPointer(e));
+    this.render();
+  }
+
+  _onPointer(e) {
+    e.preventDefault();
+    const span = e.target.closest('[data-i]');
+    if (span) {
+      const r = span.getBoundingClientRect();
+      const i = +span.dataset.i;
+      this.caret = e.clientX > r.left + r.width / 2 ? i + 1 : i;
+    } else {
+      this.caret = this.value.length;
+    }
+    this.activate();
+  }
+
+  activate() { this.active = true; this.el.classList.add('active'); this.render(); this.onActivate(this); }
+  deactivate() { this.active = false; this.el.classList.remove('active'); this.render(); }
+
+  insert(str) {
+    if (str === '\n' && !this.multiline) return;
+    if (this.mode === 'numeric' && !/^[0-9,.\-]$/.test(str)) return;
+    if (this.mode === 'token' && !/^[A-HJ-NP-Z2-9]$/.test(str)) return;
+    if (this.value.length + str.length > this.maxLength) return;
+    this.value = this.value.slice(0, this.caret) + str + this.value.slice(this.caret);
+    this.caret += str.length;
+    this._changed();
+  }
+  backspace() {
+    if (this.caret === 0) return;
+    // hapus satu karakter (termasuk pasangan surrogate emoji)
+    const before = Array.from(this.value.slice(0, this.caret));
+    before.pop();
+    const b = before.join('');
+    this.value = b + this.value.slice(this.caret);
+    this.caret = b.length;
+    this._changed();
+  }
+  move(delta) { this.caret = Math.max(0, Math.min(this.value.length, this.caret + delta)); this.render(); }
+  setValue(v) { this.value = String(v || '').slice(0, this.maxLength); this.caret = this.value.length; this.render(); }
+
+  _changed() { this.render(); this.onChange(this.value); }
+
+  render() {
+    const frag = document.createDocumentFragment();
+    if (!this.value && !this.active) {
+      const ph = document.createElement('span');
+      ph.className = 'kq-ph';
+      ph.textContent = this.placeholder;
+      frag.appendChild(ph);
+    }
+    const chars = this.value;
+    for (let i = 0; i <= chars.length; i++) {
+      if (i === this.caret && this.active) {
+        const c = document.createElement('span');
+        c.className = 'kq-caret';
+        c.setAttribute('aria-hidden', 'true');
+        frag.appendChild(c);
+      }
+      if (i < chars.length) {
+        const s = document.createElement('span');
+        s.dataset.i = String(i);
+        s.textContent = chars[i];
+        frag.appendChild(s);
+      }
+    }
+    this.el.replaceChildren(frag);
+    this.el.setAttribute('aria-label', this.value ? `Jawaban: ${this.value}` : this.placeholder);
+    const counter = this.el.parentElement && this.el.parentElement.querySelector('[data-kq-count]');
+    if (counter) counter.textContent = `${this.value.length}/${this.maxLength}`;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Keyboard                                                            */
+/* ------------------------------------------------------------------ */
+class KitaqKeyboard {
+  /** @param {HTMLElement} mount  wadah keyboard (posisi tetap di bawah) */
+  constructor(mount, opts = {}) {
+    this.mount = mount;
+    this.haptics = opts.haptics !== false && typeof navigator.vibrate === 'function';
+    this.onHide = opts.onHide || (() => {});
+    this.target = null;
+    this.layout = 'abc';
+    this.shift = 'off'; // off | once | caps
+    this.lastShiftTap = 0;
+    this.repeat = null;
+    mount.classList.add('kq-kb');
+    mount.setAttribute('role', 'group');
+    mount.setAttribute('aria-label', 'Keyboard KITAQ');
+    mount.setAttribute('data-kq', '');
+    mount.setAttribute('translate', 'no');
+    mount.addEventListener('pointerdown', (e) => this._down(e));
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach((t) => mount.addEventListener(t, () => this._stopRepeat()));
+    mount.addEventListener('contextmenu', (e) => e.preventDefault());
+    this.hide();
+  }
+
+  attach(textbox) {
+    if (this.target && this.target !== textbox) this.target.deactivate();
+    this.target = textbox;
+    this.layout = textbox.mode === 'numeric' ? 'pad' : textbox.mode === 'token' ? 'token' : 'abc';
+    this.shift = 'off';
+    this.render();
+    this.show();
+  }
+
+  show() { this.mount.hidden = false; document.documentElement.classList.add('kq-kb-open'); }
+  hide() {
+    this.mount.hidden = true;
+    document.documentElement.classList.remove('kq-kb-open');
+    if (this.target) this.target.deactivate();
+    this.onHide();
+  }
+
+  render() {
+    const rows = LAYOUTS[this.layout];
+    const wrap = document.createDocumentFragment();
+    const bar = document.createElement('div');
+    bar.className = 'kq-kb-bar';
+    bar.innerHTML = '<span class="kq-kb-brand">Keyboard KITAQ</span>';
+    const done = this._key('@done');
+    bar.appendChild(done);
+    wrap.appendChild(bar);
+    rows.forEach((row) => {
+      const r = document.createElement('div');
+      r.className = 'kq-kb-row' + (this.layout === 'pad' || this.layout === 'token' ? ' kq-pad' : '');
+      row.forEach((k) => r.appendChild(this._key(k)));
+      wrap.appendChild(r);
+    });
+    this.mount.replaceChildren(wrap);
+    this.mount.dataset.layout = this.layout;
+  }
+
+  _key(k) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.tabIndex = -1;
+    b.dataset.k = k;
+    const upper = this.shift !== 'off';
+    if (SPECIAL.has(k)) {
+      b.className = 'kq-key fn k-' + k.slice(1);
+      b.textContent = LABEL[k];
+      b.setAttribute('aria-label', ARIA[k]);
+      if (k === '@shift') { b.classList.toggle('on', this.shift !== 'off'); b.classList.toggle('caps', this.shift === 'caps'); }
+      if (k === '@enter' && this.target && !this.target.multiline) b.disabled = true;
+    } else {
+      b.className = 'kq-key';
+      b.textContent = upper && this.layout === 'abc' ? k.toUpperCase() : k;
+    }
+    return b;
+  }
+
+  _down(e) {
+    const btn = e.target.closest('.kq-key');
+    e.preventDefault(); // cegah fokus/zoom/seleksi
+    if (!btn || btn.disabled || !this.target) return;
+    const k = btn.dataset.k;
+    if (this.haptics) navigator.vibrate(8);
+    btn.classList.add('pressed');
+    setTimeout(() => btn.classList.remove('pressed'), 120);
+    this.press(k);
+    if (k === '@bksp' || k === '@left' || k === '@right') {
+      this._stopRepeat();
+      this.repeat = setTimeout(() => { this.repeat = setInterval(() => this.press(k), 60); }, 420);
+    }
+  }
+
+  _stopRepeat() { clearTimeout(this.repeat); clearInterval(this.repeat); this.repeat = null; }
+
+  press(k) {
+    const t = this.target;
+    switch (k) {
+      case '@bksp': t.backspace(); break;
+      case '@space': t.insert(' '); break;
+      case '@enter': t.insert('\n'); break;
+      case '@left': t.move(-1); break;
+      case '@right': t.move(1); break;
+      case '@123': this.layout = 'num'; this.render(); break;
+      case '@sym': this.layout = 'sym'; this.render(); break;
+      case '@abc': this.layout = 'abc'; this.render(); break;
+      case '@done': this.hide(); break;
+      case '@shift': {
+        const now = Date.now();
+        if (now - this.lastShiftTap < 350) this.shift = 'caps';
+        else this.shift = this.shift === 'off' ? 'once' : 'off';
+        this.lastShiftTap = now;
+        this.render();
+        break;
+      }
+      default: {
+        const ch = this.shift !== 'off' && this.layout === 'abc' ? k.toUpperCase() : k;
+        t.insert(ch);
+        if (this.shift === 'once') { this.shift = 'off'; this.render(); }
+      }
+    }
+  }
+
+  /**
+   * Laptop/PC: teruskan ketikan keyboard fisik ke kotak jawaban (jika pengaturan ujian mengizinkan).
+   * @returns {boolean} true bila tombol dipakai.
+   */
+  handleDesktopKey(e) {
+    if (!this.target || !this.target.active) return false;
+    if (e.ctrlKey || e.metaKey || e.altKey) return false;
+    const map = { Backspace: '@bksp', Enter: '@enter', ArrowLeft: '@left', ArrowRight: '@right', Escape: '@done' };
+    if (map[e.key]) { this.press(map[e.key]); return true; }
+    if (e.key && e.key.length === 1) { this.target.insert(e.key); return true; }
+    return false;
+  }
+}
+
+
+  var ALLOW=['chrome','safari','samsung','huawei'];
+  var NAMES={chrome:'Chrome',safari:'Safari',samsung:'Samsung Internet',huawei:'Huawei Browser',edge:'Microsoft Edge',opera:'Opera',firefox:'Firefox',brave:'Brave',webview:'Browser di dalam aplikasi',uc:'UC Browser',miui:'Mi Browser',yandex:'Yandex',duckduckgo:'DuckDuckGo',other:'Browser lain'};
+  var OS={android:'Android',ios:'iPhone (iOS)',ipados:'iPad (iPadOS)',harmony:'HarmonyOS 2–4',harmony_next:'HarmonyOS NEXT',windows:'Windows',macos:'macOS',chromeos:'ChromeOS',linux:'Linux',other:'Tidak dikenal'};
+  var SIGS=['grammarly-desktop-integration','[data-grammarly-shadow-root]','#monica-content-root','[id^="monica-"]','[id^="sider-"]','#merlin-root','#maxai-root','[id^="quillbot"]','#chatgpt-sidebar','[id^="harpa"]','iframe[src^="chrome-extension://"]','iframe[src^="moz-extension://"]','iframe[src^="safari-web-extension://"]'];
+
+  function row(state,title,desc){var ic={ok:'✓',bad:'✕',warn:'!',wait:'…'}[state];return '<div class="row"><span class="ic '+state+'">'+ic+'</span><div><b>'+title+'</b><small>'+desc+'</small></div></div>'}
+
+  function splitState(p){var sw=screen.width,sh=screen.height,land=innerWidth>innerHeight;if((land&&sw<sh)||(!land&&sw>sh)){var t=sw;sw=sh;sh=t}
+    if(!p.isMobileLike)return null;if(innerWidth/sw<0.8)return 'lebar';if(innerHeight/sh<0.62)return 'tinggi';return null}
+
+  function extState(){
+    for(var i=0;i<SIGS.length;i++){try{if(document.querySelector(SIGS[i]))return SIGS[i]}catch(e){}}
+    var foreign=[].slice.call(document.body.children).filter(function(el){return el.id!=='app'&&el.id!=='kb'&&el.tagName!=='SCRIPT'});
+    return foreign.length?(foreign[0].tagName.toLowerCase()+(foreign[0].id?'#'+foreign[0].id:'')):null;
+  }
+
+  function run(){
+    var p=detectPlatform(),items=[],bad=0,warn=0;
+    var okB=isBrowserAllowed(p,ALLOW);
+    items.push(row(okB?'ok':'bad','Browser: '+(NAMES[p.browser]||p.browser),okB?'Diizinkan untuk ujian.':'Tidak diizinkan. Buka alamat ujian dengan Chrome, Safari, Samsung Internet, atau Huawei Browser.'));if(!okB)bad++;
+    items.push(row('ok','Perangkat: '+(OS[p.os]||p.os)+' · '+({phone:'HP',tablet:'Tablet',desktop:'Laptop/PC'}[p.device]),'Terdeteksi otomatis.'));
+    if(p.os==='ios'){items.push(row(p.standalone?'ok':'bad','Mode aplikasi (Layar Utama)',p.standalone?'Dibuka dari ikon Layar Utama.':'Ketuk Bagikan → Tambah ke Layar Utama, lalu buka KITAQ ONLINE dari ikon tersebut.'));if(!p.standalone)bad++}
+    else{items.push(row(p.caps.fullscreen?'ok':'warn','Layar penuh',p.caps.fullscreen?'Didukung. Ujian akan berjalan layar penuh.':'Tidak didukung browser ini. Gunakan browser yang disarankan.'));if(!p.caps.fullscreen)warn++}
+    var sp=splitState(p);items.push(row(sp?'bad':'ok','Layar terpisah / jendela mengambang',sp?'Terdeteksi (ukuran '+sp+' terlalu kecil). Tutup aplikasi lain agar halaman memenuhi layar.':'Tidak ada. Halaman memenuhi layar.'));if(sp)bad++;
+    var tr=/translated-(ltr|rtl)/.test(document.documentElement.className)||(document.documentElement.lang&&document.documentElement.lang.indexOf('id')!==0);
+    items.push(row(tr?'bad':'ok','Terjemahan otomatis',tr?'Aktif. Matikan terjemahan halaman ini (menu browser → tampilkan asli / jangan terjemahkan).':'Tidak aktif.'));if(tr)bad++;
+    var ex=extState();items.push(row(ex?'bad':'ok','Ekstensi / asisten AI di halaman',ex?'Terdeteksi elemen asing ('+ex+'). Nonaktifkan ekstensi atau gunakan browser lain.':'Tidak terdeteksi.'));if(ex)bad++;
+    var ls=true;try{localStorage.setItem('kq-test','1');localStorage.removeItem('kq-test')}catch(e){ls=false}
+    items.push(row(ls?'ok':'warn','Penyimpanan jawaban saat offline',ls?'Tersedia. Jawaban aman bila sinyal putus.':'Tidak tersedia (mode privat?). Gunakan mode browser biasa.'));if(!ls)warn++;
+    items.push('<div id="pingRow">'+row('wait','Koneksi ke server','Menguji…')+'</div>');
+    document.getElementById('list').innerHTML=items.join('');
+    summary(bad,warn,null);
+    ping(function(ms){var st=ms==null?'warn':ms<800?'ok':'warn';var d=ms==null?(location.protocol==='file:'?'Buka halaman ini dari alamat server ujian untuk menguji koneksi.':'Server tidak terjangkau. Periksa paket data/WiFi.'):(ms<800?'Baik ('+ms+' ms).':'Lambat ('+ms+' ms). Cari sinyal yang lebih kuat.');
+      document.getElementById('pingRow').innerHTML=row(st,'Koneksi ke server',d);summary(bad,warn+(st==='ok'?0:1),true)});
+  }
+
+  function summary(bad,warn,done){var s=document.getElementById('sum'),t=document.getElementById('sumT');
+    if(bad){s.className='sum bad';t.textContent=bad+' hal perlu diperbaiki sebelum ujian'}
+    else if(!done){s.className='sum wait';t.textContent='Memeriksa koneksi…'}
+    else if(warn){s.className='sum ok';t.textContent='Siap ujian, dengan '+warn+' catatan'}
+    else{s.className='sum ok';t.textContent='Perangkat siap untuk ujian'}}
+
+  function ping(cb){if(location.protocol==='file:')return cb(null);var t0=performance.now(),done=false;var to=setTimeout(function(){if(!done){done=true;cb(null)}},6000);
+    fetch('/api/ping?t='+Date.now(),{cache:'no-store'}).then(function(r){if(done)return;done=true;clearTimeout(to);cb(r.ok?Math.round(performance.now()-t0):null)}).catch(function(){if(!done){done=true;clearTimeout(to);cb(null)}})}
+
+  var kb=new KitaqKeyboard(document.getElementById('kb'));
+  new KitaqTextbox(document.getElementById('tb'),{placeholder:'Ketuk di sini lalu ketik namamu',maxLength:60,onActivate:function(t){kb.attach(t)}});
+  document.getElementById('again').onclick=run;
+  addEventListener('resize',function(){clearTimeout(run._t);run._t=setTimeout(run,500)});
+  setTimeout(run,800); // beri waktu fitur terjemahan/ekstensi bereaksi lebih dulu
+})();
+</script>
+</body>
+</html>

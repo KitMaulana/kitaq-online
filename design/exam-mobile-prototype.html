@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="id" translate="no" class="notranslate">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="google" content="notranslate">
+<title>KITAQ ONLINE — Prototipe Layar Siswa (HP)</title>
+<link rel="icon" href="../public/favicon.ico">
+<link rel="stylesheet" href="kitaq-ui.css">
+<!-- Prototipe acuan. Keyboard KITAQ disalin dari resources/js/keyboard (kode yang sama dipakai aplikasi). Tanpa CDN. -->
+<style>
+  body{display:flex;min-height:100vh;background:linear-gradient(135deg,#e8edfb,#f4f7fc)}
+  [data-theme="dark"] body{background:linear-gradient(135deg,#0a1430,#0b1220)}
+  .stage{display:flex;gap:40px;margin:auto;padding:32px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .ctrl{width:270px}
+  .ctrl h1{font-size:22px;margin:10px 0 4px;color:var(--primary)} .ctrl p{color:var(--text-muted);margin-bottom:16px}
+  .ctrl button.scr{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;margin-bottom:6px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-weight:600;cursor:pointer;text-align:left}
+  .ctrl button.scr:hover{border-color:var(--info)} .ctrl button.scr.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+  [data-theme="dark"] .ctrl button.scr.on{color:#07122e}
+  .ctrl .grp{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--text-muted);text-transform:uppercase;margin:14px 0 6px}
+  .phone{position:relative;width:390px;height:800px;border-radius:46px;border:10px solid #0b1220;background:var(--bg);overflow:hidden;box-shadow:0 30px 60px rgba(2,22,84,.28)}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:24px;background:#0b1220;border-radius:0 0 16px 16px;z-index:50}
+  .screen{position:absolute;inset:0;overflow:auto;display:none;padding-top:30px;-webkit-overflow-scrolling:touch}
+  .screen.on{display:block;animation:fade .22s ease}
+  .pad{padding:18px}
+  .s-head{display:flex;align-items:center;justify-content:space-between;padding:6px 18px 12px}
+  .s-head img{height:34px}
+  .hello h2{font-size:22px;letter-spacing:-.01em} .hello p{color:var(--text-muted)}
+  .exam-card{background:linear-gradient(135deg,#022684,#0a46c8);color:#fff;border-radius:20px;padding:20px;margin:16px 0;position:relative;overflow:hidden}
+  .exam-card::after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.08)}
+  .exam-card small{opacity:.8}.exam-card h3{font-size:20px;margin:4px 0 10px}
+  .exam-card .meta{display:flex;gap:14px;font-size:13px;opacity:.9;margin-bottom:16px;flex-wrap:wrap}
+  .btn-white{background:#fff;color:var(--primary);font-weight:700}
+  .list-item{display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:10px}
+  .list-item .t{flex:1}.list-item b{display:block}.list-item small{color:var(--text-muted)}
+  .score{font-size:18px;font-weight:800;color:var(--success)}
+  .sec{font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin:20px 0 10px}
+  .rules{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:6px 16px;margin:14px 0}
+  .rule{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start}.rule:last-child{border:0}
+  .rule .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}
+  .rule b{display:block;font-size:14px}.rule small{color:var(--text-muted)}
+  .kv{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+  .kv div{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px}.kv small{color:var(--text-muted);display:block}.kv b{font-size:15px}
+  .sticky-cta{position:sticky;bottom:0;padding:14px 18px 22px;background:linear-gradient(180deg,transparent,var(--bg) 30%)}
+  .btn-xl{height:54px;width:100%;font-size:16px;border-radius:14px}
+
+  /* Ruang ujian */
+  .ex-top{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--border);padding:34px 14px 10px}
+  .ex-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .ex-row b{font-size:14px}.ex-row small{color:var(--text-muted);display:block;font-size:12px}
+  .timer{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:99px;background:var(--primary-soft);color:var(--primary);font-weight:800;font-variant-numeric:tabular-nums}
+  .timer.low{background:var(--accent-soft);color:var(--accent)}
+  .saved{font-size:12px;color:var(--success);display:flex;align-items:center;gap:4px;font-weight:600}
+  .qbar{height:6px;background:var(--surface-2);border-radius:99px;margin-top:10px;overflow:hidden}.qbar i{display:block;height:100%;background:var(--info);border-radius:99px;transition:width .3s}
+  .stim{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--info);border-radius:14px;padding:14px;margin-bottom:14px;font-size:15px}
+  .stim b{display:block;margin-bottom:6px;color:var(--info);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+  .q-no{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--text-muted);font-weight:700;font-size:13px}
+  .q-text{font-size:var(--fs,16px);line-height:1.65;margin-bottom:14px}
+  .opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:14px;margin-bottom:10px;border-radius:14px;border:2px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-size:var(--fs,16px);line-height:1.5;cursor:pointer;min-height:56px;transition:.12s}
+  .opt .k{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;background:var(--surface-2);color:var(--text-muted)}
+  .opt:active{transform:scale(.99)}
+  .opt.sel{border-color:var(--primary);background:var(--primary-soft)}.opt.sel .k{background:var(--primary);color:#fff}
+  [data-theme="dark"] .opt.sel .k{color:#07122e}
+  .ex-tools{display:flex;gap:8px;margin:6px 0 14px}
+  .tool{flex:1;height:44px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-weight:600;cursor:pointer}
+  .tool.on{background:var(--warning-soft);border-color:var(--warning);color:#9a6700}
+  [data-theme="dark"] .tool.on{color:var(--warning)}
+  .ex-nav{position:sticky;bottom:0;z-index:6;display:flex;gap:10px;padding:12px 14px 20px;background:var(--surface);border-top:1px solid var(--border)}
+  .ex-nav .btn{height:48px;border-radius:12px}.ex-nav .grow{flex:1}
+  .wm{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;opacity:.05;color:var(--primary);font-weight:800;font-size:14px;transform:rotate(-24deg) scale(1.5);display:flex;flex-wrap:wrap;gap:34px;align-content:flex-start;padding-top:60px}
+
+  /* Peta soal (bottom sheet) */
+  .sheet-bg{position:absolute;inset:0;background:rgba(5,14,45,.5);z-index:20;display:none}.sheet-bg.on{display:block}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:24px 24px 0 0;padding:10px 18px 24px;z-index:21;transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);max-height:78%;overflow:auto}
+  .sheet.on{transform:none}.sheet .grab{width:44px;height:5px;border-radius:99px;background:var(--border);margin:0 auto 14px}
+  .qmap{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:12px 0}
+  .qn{height:44px;border-radius:12px;border:2px solid var(--border);background:var(--surface);font-weight:700;color:var(--text);cursor:pointer}
+  .qn.ans{background:var(--primary);border-color:var(--primary);color:#fff}[data-theme="dark"] .qn.ans{color:#07122e}
+  .qn.dbt{background:var(--warning);border-color:var(--warning);color:#3b2a00}
+  .qn.cur{box-shadow:0 0 0 3px var(--info)}
+  .lg{display:flex;gap:14px;font-size:12px;color:var(--text-muted);flex-wrap:wrap}.lg i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:5px;vertical-align:-1px}
+
+  /* Overlay peringatan / kunci */
+  .ov{position:absolute;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;animation:fade .2s ease}
+  .ov.on{display:flex}
+  .ov .big{width:92px;height:92px;border-radius:28px;display:grid;place-items:center;margin-bottom:22px}
+  .ov .big .ico{width:46px;height:46px;stroke-width:1.8}
+  .ov h2{font-size:26px;letter-spacing:-.01em;margin-bottom:10px}.ov p{opacity:.9;line-height:1.55;max-width:300px}
+  .ov .count{margin:20px 0;display:flex;gap:8px}.ov .count i{width:46px;height:8px;border-radius:99px;background:rgba(0,0,0,.15)}
+  .ov.w1{background:#fff7e0;color:#4a3300}.ov.w1 .big{background:#fde7a6;color:#a56b00}.ov.w1 .count i.f{background:#f59e0b}
+  .ov.w2{background:#fff0ef;color:#6b0f0b}.ov.w2 .big{background:#ffd0cd;color:var(--accent)}.ov.w2 .count i.f{background:var(--accent)}
+  .ov.lock{background:radial-gradient(circle at 50% 30%,#5a0a0a,#2a0505);color:#fff}.ov.lock .big{background:rgba(255,255,255,.12);color:#ff8a84}
+  .ov.off{background:radial-gradient(circle at 50% 30%,#2b3a55,#0f1626);color:#fff}.ov.off .big{background:rgba(255,255,255,.1);color:#cbd5e1}
+  .ov .who{margin-top:22px;padding:12px 18px;border-radius:14px;background:rgba(255,255,255,.1);font-size:13px}.ov .who b{display:block;font-size:15px}
+  .ov .btn{margin-top:24px}
+  .pulse-ring{animation:ring 1.8s infinite}@keyframes ring{50%{box-shadow:0 0 0 14px rgba(255,255,255,.08)}}
+  .res-score{font-size:84px;font-weight:800;letter-spacing:-.04em;color:var(--primary);line-height:1}
+  .res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0}.res-grid div{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 6px}.res-grid b{display:block;font-size:22px}.res-grid small{color:var(--text-muted)}
+
+  @media (max-width:760px){
+    body{display:block;background:var(--bg)}.stage{padding:0;gap:0;display:block}.ctrl{position:fixed;top:0;left:0;right:0;z-index:99;width:auto;background:var(--surface);padding:6px 8px;border-bottom:1px solid var(--border);display:none}
+    .phone{width:100vw;height:100vh;border:0;border-radius:0}.notch{display:none}.screen{padding-top:0}.ex-top{padding-top:14px}
+  }
+  /* ---- tambahan KITAQ ONLINE ---- */
+  .login{padding-top:34px}
+  .lg-logo{display:block;width:250px;margin:0 auto 18px}
+  .school{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:20px}
+  .school b{display:block}.school small{color:var(--text-muted)}
+  .lbl{display:block;font-weight:700;font-size:13px;margin:12px 0 6px}
+  .input.xl{height:54px;font-size:20px;letter-spacing:.06em;border-radius:14px;width:100%}
+  .pw{position:relative}.pw button{position:absolute;right:6px;top:7px;width:40px;height:40px;border:0;background:transparent;color:var(--text-muted);cursor:pointer}
+  .hint{color:var(--text-muted);font-size:12.5px;display:block;margin-top:6px}
+  .link{display:block;text-align:center;margin-top:14px;color:var(--info);font-weight:600;cursor:pointer}
+  .by{text-align:center;margin-top:26px;font-size:11.5px;color:var(--text-muted)}
+  .list-item.install{border-style:dashed;border-color:var(--info)}
+  .rules.pre .rule b{color:var(--success)}
+  [data-theme="dark"] .rules.pre .rule b{color:#4ade80}
+  .rule .ic b{font-size:15px}
+  .conn{display:flex;gap:8px;align-items:center;background:var(--warning-soft);color:#7a5200;padding:9px 14px;font-size:12.5px;font-weight:600;position:relative;z-index:3}
+  [data-theme="dark"] .conn{color:var(--warning)}
+  .conn[hidden]{display:none}
+  .saved.off{color:var(--warning)}
+  .kq-answer{margin-bottom:12px}.kq-count{display:block;text-align:right;color:var(--text-muted);font-size:12px;margin-top:4px}
+  .phone .kq-kb{position:absolute;z-index:30}
+  html.kq-kb-open .phone .ex-nav{display:none}
+  html.kq-kb-open .phone .kq-exam-scroll{padding-bottom:300px}
+  .other-app{position:absolute;left:0;right:0;top:0;height:45%;display:none;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:repeating-linear-gradient(45deg,#e5e7eb,#e5e7eb 12px,#f3f4f6 12px,#f3f4f6 24px);color:#475569;z-index:60;border-bottom:6px solid #0b1220}
+  .phone.split .other-app{display:flex}
+  .phone.split .screen,.phone.split .ov{top:45%}
+  .ov.block{background:rgba(5,14,45,.97);color:#fff}.ov.block .big{background:rgba(255,255,255,.1);color:#9db8ff}
+  .ov.block h2{font-size:22px}
+  #tokenBox{cursor:pointer}
+/* Keyboard Virtual KITAQ — memakai token dari resources/css/kitaq-theme.css */
+.kq-noselect, .kq-noselect * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+html.kq-blank body { visibility: hidden; }
+
+.kq-textbox {
+  min-height: 52px; padding: 12px 14px; border: 2px solid var(--border); border-radius: 14px;
+  background: var(--surface); color: var(--text); font-size: 17px; line-height: 1.6;
+  white-space: pre-wrap; word-break: break-word; cursor: text; touch-action: manipulation;
+  -webkit-user-select: none; user-select: none;
+}
+.kq-textbox.multiline { min-height: 140px; }
+.kq-textbox.token { text-align: center; font: 800 30px/1.4 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .35em; min-height: 64px; }
+.kq-textbox.active { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-soft); }
+.kq-textbox .kq-ph { color: var(--text-muted); }
+.kq-caret { display: inline-block; width: 2px; height: 1.25em; margin: 0 -1px; vertical-align: text-bottom; background: var(--primary); animation: kq-blink 1s steps(1) infinite; }
+@keyframes kq-blink { 50% { opacity: 0; } }
+
+.kq-kb {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+  padding: 6px 4px calc(8px + env(safe-area-inset-bottom)); background: var(--kb-bg, #d7dce6);
+  border-top: 1px solid var(--border); touch-action: manipulation;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+[data-theme="dark"] .kq-kb { --kb-bg: #1b2335; }
+.kq-kb[hidden] { display: none; }
+.kq-kb-bar { display: flex; align-items: center; justify-content: space-between; padding: 2px 6px 6px; }
+.kq-kb-brand { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+.kq-kb-row { display: flex; gap: 5px; margin: 0 0 7px; justify-content: center; }
+.kq-key {
+  flex: 1 1 0; min-width: 0; height: 44px; border: 0; border-radius: 8px; background: var(--surface); color: var(--text);
+  font: 500 19px/1 Inter, system-ui, sans-serif; box-shadow: 0 1px 0 rgba(0,0,0,.25); cursor: pointer; padding: 0;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.kq-key.pressed { background: var(--primary-soft); transform: translateY(1px); }
+.kq-key.fn { background: var(--kb-fn, #b4bccb); font-size: 15px; font-weight: 600; }
+[data-theme="dark"] .kq-key.fn { --kb-fn: #33405a; }
+.kq-key.k-space { flex: 4 1 0; font-size: 14px; }
+.kq-key.k-shift, .kq-key.k-bksp { flex: 1.4 1 0; }
+.kq-key.k-123, .kq-key.k-abc, .kq-key.k-sym { flex: 1.4 1 0; font-size: 13px; }
+.kq-key.k-enter { flex: 1.4 1 0; background: var(--primary); color: #fff; }
+.kq-key.k-enter:disabled { opacity: .45; }
+.kq-key.k-shift.on { background: var(--surface); color: var(--primary); }
+.kq-key.k-shift.caps { box-shadow: inset 0 -3px 0 var(--primary); }
+.kq-key.k-done { flex: 0 0 auto; height: 30px; padding: 0 14px; background: transparent; color: var(--primary); box-shadow: none; font-size: 14px; }
+.kq-kb-row.kq-pad .kq-key { height: 50px; font-size: 22px; }
+
+
+</style>
+
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-wifioff" viewBox="0 0 24 24"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-checkc" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></symbol>
+  <symbol id="i-chevr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+  <symbol id="i-chevl" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></symbol>
+  <symbol id="i-smartphone" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></symbol>
+  <symbol id="i-columns" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/></symbol>
+  <symbol id="i-languages" viewBox="0 0 24 24"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></symbol>
+  <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 16h10"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></symbol>
+  <symbol id="i-plussq" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></symbol>
+</defs></svg>
+
+<div class="stage">
+  <aside class="ctrl" id="ctrl">
+    <img src="../branding/kitaq-online-logo.png" alt="KITAQ ONLINE" height="40">
+    <h1>Layar Siswa</h1><p>Prototipe interaktif. Keyboard KITAQ di sini memakai kode asli dari <code>resources/js/keyboard</code>.</p>
+    <div class="grp">Masuk</div>
+    <button class="scr on" data-s="login">1 · Login NISN</button>
+    <button class="scr" data-s="dash">2 · Dashboard siswa</button>
+    <button class="scr" data-s="token">3 · Token (papan KITAQ)</button>
+    <button class="scr" data-s="confirm">4 · Konfirmasi &amp; cek perangkat</button>
+    <div class="grp">Ujian</div>
+    <button class="scr" data-s="exam" data-q="0">5 · Soal pilihan ganda</button>
+    <button class="scr" data-s="exam" data-q="1">6 · Soal isian + Keyboard KITAQ</button>
+    <button class="scr" data-s="exam" data-q="2">7 · Soal uraian</button>
+    <button class="scr" data-s="map">8 · Peta soal</button>
+    <button class="scr" data-s="result">9 · Hasil</button>
+    <div class="grp">Anti-contek</div>
+    <button class="scr" data-s="w1">Peringatan 1 dari 2</button>
+    <button class="scr" data-s="split">Split screen terdeteksi</button>
+    <button class="scr" data-s="translate">Terjemahan → dikunci</button>
+    <button class="scr" data-s="lock">Ekstensi AI → dikunci</button>
+    <button class="scr" data-s="ios">iPhone belum mode aplikasi</button>
+    <div class="grp">Kondisi</div>
+    <button class="scr" data-s="offline">Sinyal putus (tetap jalan)</button>
+    <button class="scr" id="themeBtn">Ganti terang/gelap</button>
+  </aside>
+
+  <div class="phone" id="phone">
+    <div class="notch"></div>
+    <div class="other-app" aria-hidden="true"><b>Aplikasi lain</b><span>(layar terpisah)</span></div>
+
+    <!-- 1. Login -->
+    <section class="screen on" id="sc-login">
+      <div class="pad login">
+        <img class="lg-logo" src="../branding/kitaq-online-logo.png" alt="KITAQ ONLINE">
+        <div class="school"><span class="avatar" style="border-radius:12px">S1</span><div><b>SMA Negeri 1 Ciruas</b><small>Ujian Online · PTS Ganjil 2026/2027</small></div></div>
+        <label class="lbl" for="nisn">NISN</label>
+        <input class="input xl" id="nisn" inputmode="numeric" maxlength="10" value="0081234561" autocomplete="username">
+        <label class="lbl" for="tgl">Tanggal lahir</label>
+        <div class="pw"><input class="input xl" id="tgl" inputmode="numeric" type="password" value="20102008" autocomplete="current-password"><button type="button" id="pwEye" aria-label="Lihat"><svg class="ico"><use href="#i-eye"/></svg></button></div>
+        <small class="hint">Format <b>DDMMYYYY</b> · contoh lahir 20 Oktober 2008 → <b>20102008</b></small>
+        <button class="btn btn-primary btn-xl" data-s="dash" style="margin-top:18px">Masuk</button>
+        <a class="link" data-s="confirm">Cek perangkat sebelum ujian</a>
+        <div class="by">by CiptaKita.id — Solusi Digitalmu, dari kita!</div>
+      </div>
+    </section>
+
+    <!-- 2. Dashboard -->
+    <section class="screen" id="sc-dash">
+      <div class="s-head"><img src="../branding/kitaq-online-logo.png" alt="KITAQ ONLINE"><span class="avatar">AP</span></div>
+      <div class="pad" style="padding-top:4px">
+        <div class="hello"><h2>Halo, Aisyah 👋</h2><p>XII IPS 1 · NISN 0081234561</p></div>
+        <div class="exam-card">
+          <small>UJIAN HARI INI · SESI 1</small><h3>PTS Bahasa Indonesia</h3>
+          <div class="meta"><span>🕗 07.30–09.00</span><span>📝 40 soal</span><span>⏱ 90 menit</span></div>
+          <button class="btn btn-white btn-xl" data-s="token"><svg class="ico"><use href="#i-play"/></svg>Mulai Ujian</button>
+        </div>
+        <div class="list-item install"><span class="avatar tone-info" style="border-radius:12px"><svg class="ico"><use href="#i-plussq"/></svg></span><div class="t"><b>Pasang ke Layar Utama</b><small>Ujian lebih stabil &amp; wajib di iPhone</small></div><svg class="ico muted"><use href="#i-chevr"/></svg></div>
+        <div class="sec">Berikutnya</div>
+        <div class="list-item"><span class="avatar tone-info" style="border-radius:12px"><svg class="ico"><use href="#i-clock"/></svg></span><div class="t"><b>PTS Sejarah</b><small>Kamis, 19 Nov · 09.30</small></div><svg class="ico muted"><use href="#i-chevr"/></svg></div>
+        <div class="sec">Riwayat</div>
+        <div class="list-item"><span class="avatar tone-success" style="border-radius:12px"><svg class="ico"><use href="#i-checkc"/></svg></span><div class="t"><b>Ulangan Harian Teks Eksposisi</b><small>3 Nov 2026</small></div><span class="score">86</span></div>
+      </div>
+    </section>
+
+    <!-- 3. Token -->
+    <section class="screen" id="sc-token">
+      <div class="pad">
+        <button class="btn btn-ghost sm" data-s="dash"><svg class="ico sm"><use href="#i-chevl"/></svg>Kembali</button>
+        <div class="hello" style="margin-top:8px"><h2>Masukkan token</h2><p>Token ditampilkan pengawas di ruang ujian dan berganti tiap 15 menit.</p></div>
+        <div id="tokenBox" style="margin:22px 0 8px"></div>
+        <small class="hint" style="display:block;text-align:center">Huruf I, O dan angka 0, 1 tidak dipakai agar tidak tertukar.</small>
+        <button class="btn btn-primary btn-xl" data-s="confirm" style="margin-top:18px">Lanjut</button>
+      </div>
+    </section>
+
+    <!-- 4. Konfirmasi -->
+    <section class="screen" id="sc-confirm">
+      <div class="pad">
+        <div class="hello"><h2>Siap mengerjakan?</h2><p>PTS Bahasa Indonesia · 40 soal · 90 menit</p></div>
+        <div class="sec" style="margin-top:14px">Cek perangkat otomatis</div>
+        <div class="rules pre">
+          <div class="rule ok"><span class="ic tone-success"><svg class="ico"><use href="#i-check"/></svg></span><div><b>Browser diizinkan</b><small>Chrome · Android</small></div></div>
+          <div class="rule ok"><span class="ic tone-success"><svg class="ico"><use href="#i-check"/></svg></span><div><b>Layar penuh tersedia</b><small>Aktif saat ujian dimulai</small></div></div>
+          <div class="rule ok"><span class="ic tone-success"><svg class="ico"><use href="#i-check"/></svg></span><div><b>Tidak ada layar terpisah</b><small>Ujian memenuhi layar</small></div></div>
+          <div class="rule ok"><span class="ic tone-success"><svg class="ico"><use href="#i-check"/></svg></span><div><b>Terjemahan dimatikan</b><small>Halaman dikunci ke Bahasa Indonesia</small></div></div>
+        </div>
+        <div class="sec">Aturan</div>
+        <div class="rules">
+          <div class="rule"><span class="ic tone-warning"><svg class="ico"><use href="#i-columns"/></svg></span><div><b>Satu layar, satu tab</b><small>Pindah aplikasi, layar terpisah, jendela mengambang, atau tab/HP kedua tercatat. Pelanggaran ke-3 mengunci ujian.</small></div></div>
+          <div class="rule"><span class="ic tone-danger"><svg class="ico"><use href="#i-sparkles"/></svg></span><div><b>Tanpa terjemahan &amp; AI</b><small>Fitur terjemahan dan ekstensi/asisten AI langsung mengunci ujian.</small></div></div>
+          <div class="rule"><span class="ic tone-info"><svg class="ico"><use href="#i-keyboard"/></svg></span><div><b>Ketik dengan Keyboard KITAQ</b><small>Keyboard HP tidak dipakai saat ujian.</small></div></div>
+          <div class="rule"><span class="ic tone-success"><svg class="ico"><use href="#i-wifioff"/></svg></span><div><b>Sinyal putus? Tetap kerjakan</b><small>Jawaban disimpan di HP dan terkirim saat online.</small></div></div>
+        </div>
+      </div>
+      <div class="sticky-cta"><button class="btn btn-primary btn-xl" data-s="exam" data-q="0"><svg class="ico"><use href="#i-expand"/></svg>Saya Mengerti &amp; Mulai</button></div>
+    </section>
+
+    <!-- 5. Ruang ujian -->
+    <section class="screen kq-exam-scroll" id="sc-exam" style="padding-top:0">
+      <div class="wm" id="wm"></div>
+      <div class="ex-top">
+        <div class="ex-row"><div><b>PTS Bahasa Indonesia</b><span class="saved" id="saved"><svg class="ico sm"><use href="#i-check"/></svg>Tersimpan</span></div><div class="timer" id="timer"><svg class="ico sm"><use href="#i-clock"/></svg><span id="tm">58:12</span></div></div>
+        <div class="qbar"><i id="qb" style="width:30%"></i></div>
+      </div>
+      <div class="conn" id="conn" hidden><svg class="ico sm"><use href="#i-wifioff"/></svg><span>Sinyal terputus <b id="offT">0:00</b> — tetap kerjakan, jawaban aman di HP</span></div>
+      <div class="pad" style="position:relative;z-index:2" id="qwrap">
+        <div class="stim" id="stim"><b>Bacaan untuk soal 12–14</b>Literasi digital bukan sekadar kemampuan memakai gawai. Pelajar yang melek digital mampu memilah informasi, memeriksa sumbernya, dan menyampaikan pendapat dengan santun di ruang daring.</div>
+        <div class="q-no"><span id="qno">Soal 12 dari 40</span><span class="status st-warned" id="dbtTag" style="display:none"><svg class="ico sm"><use href="#i-flag"/></svg>Ragu-ragu</span></div>
+        <div class="q-text" id="qtext"></div>
+        <div id="opts"></div>
+        <div class="ex-tools">
+          <button class="tool" id="bDoubt"><svg class="ico"><use href="#i-flag"/></svg>Ragu-ragu</button>
+          <button class="tool" id="bMap"><svg class="ico"><use href="#i-grid"/></svg>Peta soal</button>
+        </div>
+      </div>
+      <div class="ex-nav"><button class="btn btn-secondary" id="bPrev"><svg class="ico"><use href="#i-chevl"/></svg>Sebelumnya</button><button class="btn btn-primary grow" id="bNext">Berikutnya<svg class="ico"><use href="#i-chevr"/></svg></button></div>
+    </section>
+
+    <!-- 9. Hasil -->
+    <section class="screen" id="sc-result">
+      <div class="pad" style="text-align:center;padding-top:50px">
+        <span class="status st-done" style="font-size:13px"><svg class="ico sm"><use href="#i-checkc"/></svg>Ujian selesai</span>
+        <h2 style="margin:18px 0 6px">PTS Bahasa Indonesia</h2><p class="muted">Aisyah Putri R. · XII IPS 1</p>
+        <div style="margin:30px 0 4px" class="res-score">84</div><div class="muted">dari 100 · KKM 75</div>
+        <div style="margin-top:14px"><span class="status st-active" style="font-size:14px;height:30px"><svg class="ico sm"><use href="#i-check"/></svg>Tuntas</span></div>
+        <div class="res-grid"><div><b style="color:var(--success)">33</b><small>Benar</small></div><div><b style="color:var(--accent)">6</b><small>Salah</small></div><div><b style="color:var(--text-muted)">1</b><small>Kosong</small></div></div>
+        <p class="muted" style="font-size:13px;margin-bottom:16px">Nilai uraian menyusul setelah dikoreksi guru.</p>
+        <button class="btn btn-primary btn-xl" data-s="dash">Kembali ke Beranda</button>
+      </div>
+    </section>
+
+    <!-- iPhone belum mode aplikasi -->
+    <section class="screen" id="sc-ios">
+      <div class="pad" style="padding-top:28px">
+        <div class="big-ico tone-info" style="margin:0 auto 14px;width:72px;height:72px;border-radius:22px;display:grid;place-items:center"><svg class="ico lg"><use href="#i-smartphone"/></svg></div>
+        <h2 style="text-align:center">Pasang KITAQ ONLINE dulu</h2>
+        <p class="muted" style="text-align:center;margin:6px 0 18px">Di iPhone, ujian hanya bisa dimulai dari ikon di Layar Utama agar tampil penuh tanpa bilah alamat.</p>
+        <div class="rules">
+          <div class="rule"><span class="ic tone-info"><b>1</b></span><div><b>Ketuk tombol Bagikan <svg class="ico sm" style="vertical-align:-3px"><use href="#i-share"/></svg></b><small>Di bilah bawah Safari</small></div></div>
+          <div class="rule"><span class="ic tone-info"><b>2</b></span><div><b>Pilih "Tambah ke Layar Utama" <svg class="ico sm" style="vertical-align:-3px"><use href="#i-plussq"/></svg></b><small>Gulir ke bawah bila tidak terlihat</small></div></div>
+          <div class="rule"><span class="ic tone-info"><b>3</b></span><div><b>Buka dari ikon KITAQ ONLINE</b><small>Login lagi, lalu mulai ujian</small></div></div>
+        </div>
+        <button class="btn btn-secondary btn-xl" disabled style="margin-top:8px">Mulai Ujian (belum tersedia)</button>
+      </div>
+    </section>
+
+    <!-- Keyboard KITAQ (kode asli) -->
+    <div id="kq-kb"></div>
+
+    <!-- Peta soal -->
+    <div class="sheet-bg" id="sheetBg"></div>
+    <div class="sheet" id="sheet">
+      <div class="grab"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:17px">Peta soal</b><span class="muted tabular" id="mapInfo"></span></div>
+      <div class="qmap" id="qmap"></div>
+      <div class="lg"><span><i style="background:var(--primary)"></i>Terjawab</span><span><i style="background:var(--warning)"></i>Ragu-ragu</span><span><i style="border:2px solid var(--border)"></i>Belum</span></div>
+      <button class="btn btn-primary btn-xl" style="margin-top:16px" data-s="result">Selesai &amp; Kumpulkan</button>
+    </div>
+
+    <!-- Overlay -->
+    <div class="ov w1" id="ov-w1" role="alertdialog" aria-modal="true">
+      <div class="big"><svg class="ico"><use href="#i-warn"/></svg></div>
+      <h2>Peringatan 1 dari 2</h2><p>Kamu terdeteksi meninggalkan halaman ujian (pindah aplikasi). Tetap di halaman ini sampai selesai.</p>
+      <div class="count"><i class="f"></i><i></i><i></i></div>
+      <p style="font-size:13px"><b>2 pelanggaran lagi</b> sebelum ujian dikunci.</p>
+      <button class="btn btn-primary btn-xl" data-s="exam" style="margin-top:22px;max-width:300px">Saya mengerti, lanjut</button>
+    </div>
+    <div class="ov block" id="ov-split" role="alertdialog" aria-modal="true">
+      <div class="big"><svg class="ico"><use href="#i-columns"/></svg></div>
+      <h2>Layar terpisah terdeteksi</h2><p>Tutup aplikasi lain atau jendela mengambang agar ujian memenuhi layar. Kejadian ini sudah dicatat (peringatan 1 dari 2).</p>
+    </div>
+    <div class="ov lock" id="ov-lock" role="alertdialog" aria-modal="true">
+      <div class="big pulse-ring"><svg class="ico" id="lockIco"><use href="#i-lock"/></svg></div>
+      <h2>Ujian dikunci</h2><p id="lockReason">Ekstensi/asisten AI terdeteksi di browser. Angkat tangan dan hubungi pengawas untuk membuka kunci.</p>
+      <div class="who"><b>Aisyah Putri R.</b>NISN 0081234561 · XII IPS 1</div>
+      <p style="margin-top:18px;font-size:12px;opacity:.7">Jawabanmu aman dan tetap tersimpan. Soal disembunyikan dari layar.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  /* ===== Keyboard KITAQ — disalin otomatis dari resources/js/keyboard/kitaq-keyboard.js ===== */
+  /**
+ * Keyboard Virtual KITAQ + Kotak Jawaban KITAQ.
+ *
+ * Tujuan: saat soal terbuka, keyboard bawaan HP (Gboard, SwiftKey, Samsung Keyboard,
+ * keyboard iOS, keyboard Huawei/Celia — termasuk fitur AI, tulis-ulang, saran, dikte,
+ * dan papan klip) TIDAK PERNAH muncul.
+ *
+ * Caranya: halaman ujian tidak memakai <input>, <textarea>, atau contenteditable.
+ * Kotak jawaban adalah <div role="textbox"> biasa yang isinya dikelola JavaScript,
+ * dan huruf dimasukkan lewat tombol-tombol keyboard KITAQ di bawah layar. Karena tidak ada
+ * field teks, sistem operasi tidak punya alasan membuka keyboard-nya. Cara ini sama
+ * di Android, iOS/iPadOS, dan HarmonyOS karena hanya memakai HTML/CSS/JS standar.
+ *
+ * Tanpa koreksi otomatis, tanpa prediksi, tanpa tempel. Tekan lama ⌫ untuk hapus cepat.
+ */
+
+const SPECIAL = new Set(['@shift', '@bksp', '@space', '@enter', '@left', '@right', '@123', '@abc', '@sym', '@done']);
+
+const LAYOUTS = {
+  abc: [
+    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+    ['@shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '@bksp'],
+    ['@123', ',', '@left', '@space', '@right', '.', '@enter'],
+  ],
+  num: [
+    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+    ['-', '/', ':', ';', '(', ')', '&', '@', '"', "'"],
+    ['@sym', '.', ',', '?', '!', '%', '+', '=', '@bksp'],
+    ['@abc', '@left', '@space', '@right', '@enter'],
+  ],
+  sym: [
+    ['[', ']', '{', '}', '#', '^', '*', '<', '>', '~'],
+    ['_', '\\', '|', '$', '°', '•', '…', '“', '”', '–'],
+    ['@123', '√', 'π', '²', '³', '±', '×', '÷', '@bksp'],
+    ['@abc', '≤', '≥', '≠', '@space', '½', '@enter'],
+  ],
+  token: [
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+    ['J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R'],
+    ['S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
+    ['2', '3', '4', '5', '6', '7', '8', '9'],
+    ['@left', '@bksp', '@right'],
+  ],
+  pad: [
+    ['1', '2', '3'],
+    ['4', '5', '6'],
+    ['7', '8', '9'],
+    [',', '0', '-'],
+    ['@left', '@bksp', '@right'],
+  ],
+};
+
+const LABEL = {
+  '@shift': '⇧', '@bksp': '⌫', '@space': 'spasi', '@enter': '↵', '@left': '‹', '@right': '›',
+  '@123': '?123', '@abc': 'ABC', '@sym': '=\\<', '@done': 'Selesai',
+};
+const ARIA = {
+  '@shift': 'Huruf besar', '@bksp': 'Hapus', '@space': 'Spasi', '@enter': 'Baris baru', '@left': 'Kursor ke kiri',
+  '@right': 'Kursor ke kanan', '@123': 'Angka dan tanda baca', '@abc': 'Huruf', '@sym': 'Simbol', '@done': 'Tutup keyboard',
+};
+
+/* ------------------------------------------------------------------ */
+/* Kotak jawaban                                                       */
+/* ------------------------------------------------------------------ */
+class KitaqTextbox {
+  /**
+   * @param {HTMLElement} el
+   * @param {{value?:string,maxLength?:number,multiline?:boolean,mode?:'text'|'numeric'|'token',placeholder?:string,onChange?:(v:string)=>void,onActivate?:(tb:KitaqTextbox)=>void}} opts
+   */
+  constructor(el, opts = {}) {
+    this.el = el;
+    this.value = opts.value || '';
+    this.maxLength = opts.maxLength || 2000;
+    this.multiline = !!opts.multiline;
+    this.mode = opts.mode || 'text';
+    this.placeholder = opts.placeholder || 'Ketuk di sini untuk menjawab';
+    this.onChange = opts.onChange || (() => {});
+    this.onActivate = opts.onActivate || (() => {});
+    this.caret = this.value.length;
+    this.active = false;
+
+    el.classList.add('kq-textbox');
+    if (this.multiline) el.classList.add('multiline');
+    if (this.mode === 'token') el.classList.add('token');
+    el.setAttribute('role', 'textbox');
+    el.setAttribute('aria-multiline', String(this.multiline));
+    el.setAttribute('aria-readonly', 'false');
+    el.setAttribute('tabindex', '-1');      // tidak bisa difokus lewat Tab → tidak memicu keyboard OS
+    el.setAttribute('translate', 'no');
+    el.removeAttribute('contenteditable');
+    el.addEventListener('pointerdown', (e) => this._onPointer(e));
+    this.render();
+  }
+
+  _onPointer(e) {
+    e.preventDefault();
+    const span = e.target.closest('[data-i]');
+    if (span) {
+      const r = span.getBoundingClientRect();
+      const i = +span.dataset.i;
+      this.caret = e.clientX > r.left + r.width / 2 ? i + 1 : i;
+    } else {
+      this.caret = this.value.length;
+    }
+    this.activate();
+  }
+
+  activate() { this.active = true; this.el.classList.add('active'); this.render(); this.onActivate(this); }
+  deactivate() { this.active = false; this.el.classList.remove('active'); this.render(); }
+
+  insert(str) {
+    if (str === '\n' && !this.multiline) return;
+    if (this.mode === 'numeric' && !/^[0-9,.\-]$/.test(str)) return;
+    if (this.mode === 'token' && !/^[A-HJ-NP-Z2-9]$/.test(str)) return;
+    if (this.value.length + str.length > this.maxLength) return;
+    this.value = this.value.slice(0, this.caret) + str + this.value.slice(this.caret);
+    this.caret += str.length;
+    this._changed();
+  }
+  backspace() {
+    if (this.caret === 0) return;
+    // hapus satu karakter (termasuk pasangan surrogate emoji)
+    const before = Array.from(this.value.slice(0, this.caret));
+    before.pop();
+    const b = before.join('');
+    this.value = b + this.value.slice(this.caret);
+    this.caret = b.length;
+    this._changed();
+  }
+  move(delta) { this.caret = Math.max(0, Math.min(this.value.length, this.caret + delta)); this.render(); }
+  setValue(v) { this.value = String(v || '').slice(0, this.maxLength); this.caret = this.value.length; this.render(); }
+
+  _changed() { this.render(); this.onChange(this.value); }
+
+  render() {
+    const frag = document.createDocumentFragment();
+    if (!this.value && !this.active) {
+      const ph = document.createElement('span');
+      ph.className = 'kq-ph';
+      ph.textContent = this.placeholder;
+      frag.appendChild(ph);
+    }
+    const chars = this.value;
+    for (let i = 0; i <= chars.length; i++) {
+      if (i === this.caret && this.active) {
+        const c = document.createElement('span');
+        c.className = 'kq-caret';
+        c.setAttribute('aria-hidden', 'true');
+        frag.appendChild(c);
+      }
+      if (i < chars.length) {
+        const s = document.createElement('span');
+        s.dataset.i = String(i);
+        s.textContent = chars[i];
+        frag.appendChild(s);
+      }
+    }
+    this.el.replaceChildren(frag);
+    this.el.setAttribute('aria-label', this.value ? `Jawaban: ${this.value}` : this.placeholder);
+    const counter = this.el.parentElement && this.el.parentElement.querySelector('[data-kq-count]');
+    if (counter) counter.textContent = `${this.value.length}/${this.maxLength}`;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Keyboard                                                            */
+/* ------------------------------------------------------------------ */
+class KitaqKeyboard {
+  /** @param {HTMLElement} mount  wadah keyboard (posisi tetap di bawah) */
+  constructor(mount, opts = {}) {
+    this.mount = mount;
+    this.haptics = opts.haptics !== false && typeof navigator.vibrate === 'function';
+    this.onHide = opts.onHide || (() => {});
+    this.target = null;
+    this.layout = 'abc';
+    this.shift = 'off'; // off | once | caps
+    this.lastShiftTap = 0;
+    this.repeat = null;
+    mount.classList.add('kq-kb');
+    mount.setAttribute('role', 'group');
+    mount.setAttribute('aria-label', 'Keyboard KITAQ');
+    mount.setAttribute('data-kq', '');
+    mount.setAttribute('translate', 'no');
+    mount.addEventListener('pointerdown', (e) => this._down(e));
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach((t) => mount.addEventListener(t, () => this._stopRepeat()));
+    mount.addEventListener('contextmenu', (e) => e.preventDefault());
+    this.hide();
+  }
+
+  attach(textbox) {
+    if (this.target && this.target !== textbox) this.target.deactivate();
+    this.target = textbox;
+    this.layout = textbox.mode === 'numeric' ? 'pad' : textbox.mode === 'token' ? 'token' : 'abc';
+    this.shift = 'off';
+    this.render();
+    this.show();
+  }
+
+  show() { this.mount.hidden = false; document.documentElement.classList.add('kq-kb-open'); }
+  hide() {
+    this.mount.hidden = true;
+    document.documentElement.classList.remove('kq-kb-open');
+    if (this.target) this.target.deactivate();
+    this.onHide();
+  }
+
+  render() {
+    const rows = LAYOUTS[this.layout];
+    const wrap = document.createDocumentFragment();
+    const bar = document.createElement('div');
+    bar.className = 'kq-kb-bar';
+    bar.innerHTML = '<span class="kq-kb-brand">Keyboard KITAQ</span>';
+    const done = this._key('@done');
+    bar.appendChild(done);
+    wrap.appendChild(bar);
+    rows.forEach((row) => {
+      const r = document.createElement('div');
+      r.className = 'kq-kb-row' + (this.layout === 'pad' || this.layout === 'token' ? ' kq-pad' : '');
+      row.forEach((k) => r.appendChild(this._key(k)));
+      wrap.appendChild(r);
+    });
+    this.mount.replaceChildren(wrap);
+    this.mount.dataset.layout = this.layout;
+  }
+
+  _key(k) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.tabIndex = -1;
+    b.dataset.k = k;
+    const upper = this.shift !== 'off';
+    if (SPECIAL.has(k)) {
+      b.className = 'kq-key fn k-' + k.slice(1);
+      b.textContent = LABEL[k];
+      b.setAttribute('aria-label', ARIA[k]);
+      if (k === '@shift') { b.classList.toggle('on', this.shift !== 'off'); b.classList.toggle('caps', this.shift === 'caps'); }
+      if (k === '@enter' && this.target && !this.target.multiline) b.disabled = true;
+    } else {
+      b.className = 'kq-key';
+      b.textContent = upper && this.layout === 'abc' ? k.toUpperCase() : k;
+    }
+    return b;
+  }
+
+  _down(e) {
+    const btn = e.target.closest('.kq-key');
+    e.preventDefault(); // cegah fokus/zoom/seleksi
+    if (!btn || btn.disabled || !this.target) return;
+    const k = btn.dataset.k;
+    if (this.haptics) navigator.vibrate(8);
+    btn.classList.add('pressed');
+    setTimeout(() => btn.classList.remove('pressed'), 120);
+    this.press(k);
+    if (k === '@bksp' || k === '@left' || k === '@right') {
+      this._stopRepeat();
+      this.repeat = setTimeout(() => { this.repeat = setInterval(() => this.press(k), 60); }, 420);
+    }
+  }
+
+  _stopRepeat() { clearTimeout(this.repeat); clearInterval(this.repeat); this.repeat = null; }
+
+  press(k) {
+    const t = this.target;
+    switch (k) {
+      case '@bksp': t.backspace(); break;
+      case '@space': t.insert(' '); break;
+      case '@enter': t.insert('\n'); break;
+      case '@left': t.move(-1); break;
+      case '@right': t.move(1); break;
+      case '@123': this.layout = 'num'; this.render(); break;
+      case '@sym': this.layout = 'sym'; this.render(); break;
+      case '@abc': this.layout = 'abc'; this.render(); break;
+      case '@done': this.hide(); break;
+      case '@shift': {
+        const now = Date.now();
+        if (now - this.lastShiftTap < 350) this.shift = 'caps';
+        else this.shift = this.shift === 'off' ? 'once' : 'off';
+        this.lastShiftTap = now;
+        this.render();
+        break;
+      }
+      default: {
+        const ch = this.shift !== 'off' && this.layout === 'abc' ? k.toUpperCase() : k;
+        t.insert(ch);
+        if (this.shift === 'once') { this.shift = 'off'; this.render(); }
+      }
+    }
+  }
+
+  /**
+   * Laptop/PC: teruskan ketikan keyboard fisik ke kotak jawaban (jika pengaturan ujian mengizinkan).
+   * @returns {boolean} true bila tombol dipakai.
+   */
+  handleDesktopKey(e) {
+    if (!this.target || !this.target.active) return false;
+    if (e.ctrlKey || e.metaKey || e.altKey) return false;
+    const map = { Backspace: '@bksp', Enter: '@enter', ArrowLeft: '@left', ArrowRight: '@right', Escape: '@done' };
+    if (map[e.key]) { this.press(map[e.key]); return true; }
+    if (e.key && e.key.length === 1) { this.target.insert(e.key); return true; }
+    return false;
+  }
+}
+
+  /* ===== akhir kode keyboard ===== */
+
+  var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var root=document.documentElement;
+  function setTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('kitaq-theme',t)}catch(e){}}
+  var sv=null;try{sv=localStorage.getItem('kitaq-theme')}catch(e){} setTheme(sv||'light');
+  $('#themeBtn').onclick=function(){setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark')};
+  $('#pwEye').onclick=function(){var i=$('#tgl');i.type=i.type==='password'?'text':'password'};
+
+  var keyboard=new KitaqKeyboard($('#kq-kb'));
+  var tokTb=new KitaqTextbox($('#tokenBox'),{mode:'token',maxLength:6,placeholder:'Ketuk untuk isi token',onActivate:function(tb){keyboard.attach(tb)}});
+
+  var Q=[
+    {type:'pg',no:12,t:'Gagasan utama paragraf pada bacaan di atas adalah …',o:['Gawai membuat pelajar malas belajar','Literasi digital mencakup memilah, memeriksa, dan menyampaikan informasi dengan santun','Ruang daring berbahaya bagi pelajar','Pelajar harus membatasi pemakaian gawai','Informasi daring selalu dapat dipercaya'],a:1},
+    {type:'isian',no:13,t:'Tuliskan bentuk baku dari kata "apotik"!',a:''},
+    {type:'uraian',no:14,t:'Tuliskan dua contoh sikap santun saat berpendapat di ruang daring beserta alasannya!',a:''}
+  ];
+  var cur=0,dbt={},total=40,offline=false;
+
+  function renderQ(){
+    var q=Q[cur];keyboard.hide();
+    $('#qno').textContent='Soal '+q.no+' dari '+total;$('#qtext').textContent=q.t;
+    $('#qb').style.width=Math.round(q.no/total*100)+'%';$('#stim').style.display=q.type==='pg'?'block':'none';
+    var opts=$('#opts');opts.innerHTML='';
+    if(q.type==='pg'){
+      q.o.forEach(function(o,i){var b=document.createElement('button');b.className='opt'+(q.a===i?' sel':'');b.innerHTML='<span class="k">'+'ABCDE'[i]+'</span><span></span>';b.lastChild.textContent=o;b.onclick=function(){q.a=i;saved();renderQ()};opts.appendChild(b)});
+    }else{
+      var w=document.createElement('div');w.className='kq-answer';var box=document.createElement('div');var c=document.createElement('small');c.className='kq-count';c.setAttribute('data-kq-count','');
+      w.appendChild(box);w.appendChild(c);opts.appendChild(w);
+      q.tb=new KitaqTextbox(box,{value:q.a,multiline:q.type==='uraian',maxLength:q.type==='uraian'?3000:120,placeholder:q.type==='uraian'?'Ketuk untuk menulis jawaban uraian':'Ketuk untuk mengisi jawaban',
+        onActivate:function(tb){keyboard.attach(tb);setTimeout(function(){box.scrollIntoView({block:'center',behavior:'smooth'})},60)},onChange:function(v){q.a=v;saved()}});
+    }
+    $('#bDoubt').classList.toggle('on',!!dbt[cur]);$('#dbtTag').style.display=dbt[cur]?'inline-flex':'none';$('#bPrev').disabled=cur===0;
+  }
+  function saved(){var s=$('#saved');s.classList.toggle('off',offline);s.innerHTML='<svg class="ico sm"><use href="#i-'+(offline?'wifioff':'check')+'"/></svg>'+(offline?'Offline — tersimpan di HP':'Tersimpan')}
+  $('#bDoubt').onclick=function(){dbt[cur]=!dbt[cur];renderQ()};
+  $('#bPrev').onclick=function(){if(cur>0){cur--;renderQ()}};
+  $('#bNext').onclick=function(){if(cur<Q.length-1){cur++;renderQ();$('#sc-exam').scrollTop=0}else openSheet()};
+  var w='';for(var i=0;i<60;i++)w+='<span>Aisyah Putri R. · 0081234561</span>';$('#wm').innerHTML=w;
+
+  function renderMap(){var h='';for(var n=1;n<=total;n++){var cls='qn';if(n<12)cls+=(n===6||n===9)?' dbt':' ans';else if(n<=14){var q=Q[n-12];if(dbt[n-12])cls+=' dbt';else if(q.a!==''&&q.a!=null)cls+=' ans';if(n-12===cur)cls+=' cur'}h+='<button class="'+cls+'" data-n="'+n+'">'+n+'</button>'}$('#qmap').innerHTML=h;$('#mapInfo').textContent='11 terjawab · 29 belum'}
+  function openSheet(){keyboard.hide();renderMap();$('#sheetBg').classList.add('on');$('#sheet').classList.add('on')}
+  function closeSheet(){$('#sheetBg').classList.remove('on');$('#sheet').classList.remove('on')}
+  $('#bMap').onclick=openSheet;$('#sheetBg').onclick=closeSheet;
+  $('#qmap').addEventListener('click',function(e){var b=e.target.closest('.qn');if(!b)return;var i=+b.dataset.n-12;if(i>=0&&i<Q.length){cur=i;renderQ();closeSheet()}});
+
+  var REASON={translate:'Fitur terjemahan browser terdeteksi. Angkat tangan dan hubungi pengawas untuk membuka kunci.',lock:'Ekstensi/asisten AI terdeteksi di browser. Angkat tangan dan hubungi pengawas untuk membuka kunci.'};
+  function show(s,q){
+    keyboard.hide();closeSheet();$('#phone').classList.remove('split');
+    $$('.screen').forEach(function(e){e.classList.remove('on')});$$('.ov').forEach(function(e){e.classList.remove('on')});
+    offline=s==='offline';$('#conn').hidden=!offline;saved();
+    var exam=['exam','w1','split','translate','lock','offline','map'].indexOf(s)>-1;
+    if(exam){if(q!=null){cur=+q}$('#sc-exam').classList.add('on');renderQ()}
+    else $('#sc-'+s).classList.add('on');
+    if(s==='w1')$('#ov-w1').classList.add('on');
+    if(s==='split'){$('#phone').classList.add('split');$('#ov-split').classList.add('on')}
+    if(s==='translate'||s==='lock'){$('#lockReason').textContent=REASON[s];$('#ov-lock').classList.add('on')}
+    if(s==='map')openSheet();
+    if(s==='exam'&&+q===1){Q[1].a=Q[1].a||'apote';renderQ();Q[1].tb.activate()}
+    if(s==='token'){tokTb.setValue('7QK4');tokTb.activate()}
+    $$('.ctrl .scr[data-s]').forEach(function(b){b.classList.toggle('on',b.dataset.s===s&&(b.dataset.q==null||+b.dataset.q===+(q||0)))});
+    var a=$('.screen.on');if(a)a.scrollTop=0;
+  }
+  document.addEventListener('click',function(e){var b=e.target.closest('[data-s]');if(b)show(b.dataset.s,b.dataset.q)});
+
+  var sec=58*60+12,offS=0;setInterval(function(){sec=Math.max(0,sec-1);$('#tm').textContent=('0'+Math.floor(sec/60)).slice(-2)+':'+('0'+sec%60).slice(-2);$('#timer').classList.toggle('low',sec<300);
+    if(offline){offS++;$('#offT').textContent=Math.floor(offS/60)+':'+('0'+offS%60).slice(-2)}else offS=0},1000);
+  renderQ();
+  var h=location.hash.slice(1);if(h){var p=h.split(':');show(p[0],p[1])}
+})();
+
+</script>
+</body>
+</html>

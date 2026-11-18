@@ -1,0 +1,109 @@
+/* KITAQ ONLINE — gaya halaman ujian siswa (acuan visual: design/exam-mobile-prototype.html) */
+@import "./kitaq-theme.css";
+@import "../js/keyboard/kitaq-keyboard.css";
+
+.kitaq-exam { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; overscroll-behavior: none; }
+.kitaq-exam, .kitaq-exam * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+
+.kq-screen { padding: 24px 18px; max-width: 560px; margin: 0 auto; }
+.kq-rules { padding-left: 18px; line-height: 1.6; color: var(--text-muted); }
+.kq-alert { background: var(--accent-soft); color: var(--accent); border-radius: 14px; padding: 12px 14px; margin: 12px 0; }
+.kq-btn-primary { width: 100%; height: 52px; border: 0; border-radius: 14px; background: var(--primary); color: #fff; font: 700 16px Inter, sans-serif; }
+.kq-btn-primary:disabled { opacity: .45; }
+
+.kq-top { position: sticky; top: 0; z-index: 5; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 6px; }
+#kq-save { display: block; font-size: 12px; font-weight: 600; color: var(--success); }
+#kq-save[data-status="offline"], #kq-save[data-status="retrying"] { color: var(--warning); }
+.kq-timer { padding: 6px 12px; border-radius: 99px; background: var(--primary-soft); color: var(--primary); font-weight: 800; font-variant-numeric: tabular-nums; }
+.kq-timer.low { background: var(--accent-soft); color: var(--accent); }
+.kq-bar { grid-column: 1 / -1; height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.kq-bar i { display: block; height: 100%; background: var(--info); }
+.kq-conn { background: var(--warning-soft); color: #7a5200; padding: 8px 14px; font-size: 13px; font-weight: 600; }
+
+.kq-q { padding: 16px; position: relative; z-index: 2; }
+.kq-stim { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--info); border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+.kq-qno { color: var(--text-muted); font-weight: 700; font-size: 13px; margin-bottom: 8px; }
+.kq-qtext { font-size: 17px; line-height: 1.65; margin-bottom: 14px; }
+#kq-qimg, .kq-opt img { max-width: 100%; border-radius: 10px; margin: 6px 0; pointer-events: none; }
+.kq-opt { display: flex; gap: 12px; width: 100%; text-align: left; padding: 14px; margin-bottom: 10px; border-radius: 14px; border: 2px solid var(--border); background: var(--surface); color: var(--text); font: 16px/1.5 Inter, sans-serif; min-height: 56px; }
+.kq-opt .k { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: var(--surface-2); }
+.kq-opt.sel { border-color: var(--primary); background: var(--primary-soft); }
+.kq-opt.sel .k { background: var(--primary); color: #fff; }
+.kq-answer { margin-bottom: 10px; }
+.kq-count { display: block; text-align: right; color: var(--text-muted); margin-top: 4px; }
+.kq-tools { display: flex; gap: 8px; margin: 6px 0 14px; }
+.kq-tools button, .kq-nav button:not(.kq-btn-primary) { flex: 1; height: 46px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-weight: 600; }
+#kq-doubt.on { background: var(--warning-soft); border-color: var(--warning); }
+.kq-nav { position: sticky; bottom: 0; z-index: 6; display: flex; gap: 10px; padding: 12px 14px calc(14px + env(safe-area-inset-bottom)); background: var(--surface); border-top: 1px solid var(--border); }
+.kq-nav .kq-btn-primary { flex: 2; height: 46px; }
+html.kq-kb-open .kq-nav { display: none; }
+
+.kq-watermark { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: .06; overflow: hidden; }
+.kq-watermark::before { content: attr(data-watermark) "   " attr(data-watermark) "   " attr(data-watermark); position: absolute; inset: -50%; transform: rotate(-24deg); font-weight: 800; font-size: 15px; color: var(--primary); line-height: 70px; word-spacing: 30px; white-space: pre-wrap; }
+
+.kq-sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; background: var(--surface); border-radius: 22px 22px 0 0; padding: 18px; box-shadow: 0 -10px 30px rgba(0,0,0,.2); }
+.kq-map-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 14px; }
+.kq-qn { height: 44px; border-radius: 12px; border: 2px solid var(--border); background: var(--surface); font-weight: 700; color: var(--text); }
+.kq-qn.ans { background: var(--primary); border-color: var(--primary); color: #fff; }
+.kq-qn.dbt { background: var(--warning); border-color: var(--warning); }
+.kq-qn.cur { box-shadow: 0 0 0 3px var(--info); }
+
+.kq-overlay { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; background: var(--surface); }
+.kq-overlay.warn { background: #fff7e0; color: #4a3300; }
+.kq-overlay.lock { background: radial-gradient(circle at 50% 30%, #5a0a0a, #2a0505); color: #fff; }
+.kq-overlay.block { background: rgba(5, 14, 45, .96); color: #fff; z-index: 45; }
+.kq-overlay .kq-btn-primary { max-width: 320px; margin-top: 18px; }
+.kq-who { margin-top: 18px; padding: 10px 16px; border-radius: 12px; background: rgba(255,255,255,.1); }
+.kq-small { font-size: 12px; opacity: .75; }
+.kq-toast { position: fixed; left: 16px; right: 16px; top: 16px; z-index: 50; background: var(--primary); color: #fff; padding: 12px 16px; border-radius: 12px; font-weight: 600; }
+
+/* ---- Tambahan KITAQ ONLINE (adaptasi; acuan design/exam-mobile-prototype.html) ---- */
+.kq-logo { display: block; width: 210px; margin: 0 auto 16px; }
+.kq-screen h1 { font-size: 22px; margin: 2px 0 12px; letter-spacing: -.01em; }
+.kq-sub { color: var(--text-muted); font-weight: 600; margin: 0; }
+.kq-kv { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+.kq-kv div { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; }
+.kq-kv small { display: block; color: var(--text-muted); font-size: 12px; } .kq-kv b { font-size: 15px; }
+.kq-rules { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px 14px 12px 30px; }
+.kq-privacy { color: var(--text-muted); margin: 10px 0; }
+.kq-ok { background: var(--success-soft); color: var(--success); border-radius: 14px; padding: 12px 14px; margin: 12px 0; font-weight: 600; }
+.kq-top-l b { font-size: 14px; }
+.kq-qno-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.kq-qno-row .kq-qno { margin: 0; }
+.kq-qtype { font-size: 12px; font-weight: 700; color: var(--info); background: var(--info-soft); padding: 3px 10px; border-radius: 99px; }
+.kq-qtext p, .kq-stim p, .kq-opt .t p, .kq-bs-text p { margin: 0 0 8px; }
+.kq-qtext p:last-child, .kq-opt .t p:last-child, .kq-bs-text p:last-child { margin-bottom: 0; }
+.kq-qtext img, .kq-stim img, .kq-jr img { max-width: 100%; border-radius: 10px; pointer-events: none; }
+.kq-stim b#kq-stimulus-title { display: block; margin-bottom: 6px; color: var(--info); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+.kq-opt .t { flex: 1; min-width: 0; }
+.kq-bs { background: var(--surface); border: 2px solid var(--border); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; }
+.kq-bs-text { font-size: 16px; line-height: 1.5; margin-bottom: 10px; }
+.kq-bs-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.kq-chip { min-width: 64px; height: 44px; padding: 0 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--surface); color: var(--text); font: 700 15px Inter, sans-serif; }
+.kq-chip.sel { border-color: var(--primary); background: var(--primary); color: #fff; }
+.kq-chip:disabled { opacity: .5; }
+.kq-jodoh-right { background: var(--surface-2); border-radius: 14px; padding: 10px 14px; margin-bottom: 12px; font-size: 15px; }
+.kq-jr { padding: 4px 0; }
+#kq-audio { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; color: var(--text-muted); }
+.kq-grab { width: 44px; height: 5px; border-radius: 99px; background: var(--border); margin: 0 auto 12px; }
+.kq-map-head { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.kq-legend { display: flex; gap: 14px; font-size: 12px; color: var(--text-muted); flex-wrap: wrap; margin-bottom: 6px; }
+.kq-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 4px; margin-right: 5px; vertical-align: -1px; border: 2px solid var(--border); }
+.kq-legend i.ans { background: var(--primary); border-color: var(--primary); } .kq-legend i.dbt { background: var(--warning); border-color: var(--warning); }
+.kq-sheet { max-height: 80vh; overflow: auto; }
+.kq-sheet .kq-btn-primary { margin-bottom: 8px; }
+.kq-btn-ghost { width: 100%; height: 48px; border: 0; border-radius: 14px; background: transparent; color: var(--text-muted); font: 600 15px Inter, sans-serif; }
+.kq-overlay h2 { font-size: 24px; margin: 0 0 10px; } .kq-overlay p { max-width: 320px; line-height: 1.55; }
+.kq-overlay .kq-btn-ghost { max-width: 320px; }
+.kq-overlay.off { background: radial-gradient(circle at 50% 30%, #2b3a55, #0f1626); color: #fff; }
+.kq-overlay.warn.last { background: #fff0ef; color: #6b0f0b; }
+.kq-big { width: 92px; height: 92px; border-radius: 28px; display: grid; place-items: center; font-size: 42px; margin-bottom: 18px; background: rgba(0,0,0,.08); }
+.kq-overlay.lock .kq-big, .kq-overlay.off .kq-big { background: rgba(255,255,255,.12); }
+.kq-count { display: flex; gap: 8px; margin: 16px 0; } .kq-count i { width: 46px; height: 8px; border-radius: 99px; background: rgba(0,0,0,.15); }
+.kq-count i.f { background: #f59e0b; } .kq-overlay.warn.last .kq-count i.f { background: var(--accent); }
+.kq-font-1 .kq-qtext, .kq-font-1 .kq-opt, .kq-font-1 .kq-bs-text { font-size: 19px; }
+.kq-font-2 .kq-qtext, .kq-font-2 .kq-opt, .kq-font-2 .kq-bs-text { font-size: 22px; }
+.kq-large .kq-qtext, .kq-large .kq-opt, .kq-large .kq-bs-text { font-size: 20px; }
+html.kq-kb-open .kq-exam-scroll { padding-bottom: 320px; }
+@media (prefers-color-scheme: dark) { .kitaq-exam .kq-overlay.warn { background: #33270b; color: #fde68a; } }

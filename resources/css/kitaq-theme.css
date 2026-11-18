@@ -1,0 +1,137 @@
+/* KITAQ — token desain (Tailwind v4)  |  (c) CiptaKita.id
+   Impor di resources/css/app.css setelah `@import "tailwindcss";`
+   Font Inter dibundel lokal:  npm i @fontsource/inter
+   Sumber visual: design/kitaq-ui.css, aturan: docs/DESIGN_SYSTEM.md */
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/inter/800.css";
+
+/* ---- Token semantik (terang) ---- */
+:root {
+  --primary: #022684;
+  --primary-hover: #011a5c;
+  --primary-soft: #e8edfb;
+  --accent: #f92019;
+  --accent-soft: #fee7e6;
+  --info: #0271d3;
+  --info-soft: #e5f1fc;
+  --success: #16a34a;
+  --success-soft: #e3f6ea;
+  --warning: #f59e0b;
+  --warning-soft: #fef3da;
+  --neutral: #64748b;
+
+  --bg: #f4f7fc;
+  --surface: #ffffff;
+  --surface-2: #f1f5fb;
+  --border: #e3e9f4;
+  --text: #0f172a;
+  --text-muted: #5b6b88;
+
+  --sidebar-from: #011a5c;
+  --sidebar-to: #022684;
+
+  --radius-card: 16px;
+  --radius-control: 10px;
+  --radius-modal: 18px;
+  --shadow-card: 0 1px 2px rgba(2, 38, 132, .06), 0 4px 16px rgba(2, 38, 132, .06);
+  --shadow-pop: 0 12px 40px rgba(2, 22, 84, .22);
+}
+
+/* ---- Mode gelap ---- */
+[data-theme="dark"] {
+  --primary: #6c95ff;
+  --primary-hover: #8aaeff;
+  --primary-soft: #16264f;
+  --accent: #ff5a52;
+  --accent-soft: #3a1618;
+  --info: #4da3ff;
+  --info-soft: #11294a;
+  --success: #34d27b;
+  --success-soft: #0f2d1e;
+  --warning: #fbbf24;
+  --warning-soft: #33270b;
+  --neutral: #94a3b8;
+
+  --bg: #0b1220;
+  --surface: #111a2e;
+  --surface-2: #16213a;
+  --border: #223054;
+  --text: #e6ecf8;
+  --text-muted: #93a3c4;
+
+  --sidebar-from: #0a1430;
+  --sidebar-to: #0e1d4a;
+
+  --shadow-card: 0 0 0 1px rgba(255, 255, 255, .02);
+  --shadow-pop: 0 12px 40px rgba(0, 0, 0, .5);
+}
+
+/* ---- Hubungkan ke utilitas Tailwind: bg-surface, text-muted, border-line, dll ---- */
+@theme inline {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-neutral: var(--neutral);
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--border);
+  --color-ink: var(--text);
+  --color-muted: var(--text-muted);
+
+  /* alias merek (kompatibel dengan versi sebelumnya) */
+  --color-kitaq-navy: #022684;
+  --color-kitaq-red: #f92019;
+  --color-kitaq-blue: #0271d3;
+
+  /* status monitoring */
+  --color-st-idle: #64748b;
+  --color-st-active: #16a34a;
+  --color-st-warned: #f59e0b;
+  --color-st-locked: #f92019;
+  --color-st-offline: #475569;
+  --color-st-done: #0271d3;
+
+  --radius-card: 16px;
+  --radius-control: 10px;
+  --radius-modal: 18px;
+}
+
+/* ---- Dasar ---- */
+html { color-scheme: light; }
+[data-theme="dark"] html, html[data-theme="dark"] { color-scheme: dark; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+.tabular { font-variant-numeric: tabular-nums; }
+
+:focus-visible { outline: 2px solid var(--info); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+/* ---- Halaman ujian: cegah seleksi teks & callout tekan-lama ---- */
+.kitaq-exam {
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; overscroll-behavior: none;
+}
+.kitaq-exam input, .kitaq-exam textarea { -webkit-user-select: text; user-select: text; }
+
+/* ---- Watermark samar nama siswa ---- */
+.kitaq-watermark {
+  position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  opacity: .06; font-weight: 800; color: var(--primary);
+  display: flex; flex-wrap: wrap; gap: 3rem; transform: rotate(-24deg) scale(1.4);
+}

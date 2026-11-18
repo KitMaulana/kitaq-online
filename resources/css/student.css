@@ -1,0 +1,51 @@
+/* KITAQ ONLINE — halaman siswa non-ujian (login, dashboard, token, hasil, panduan) & login staf.
+   Acuan visual: design/exam-mobile-prototype.html. Mobile-first, lebar efektif 320–480 px. */
+@import "tailwindcss";
+@import "./kitaq-theme.css";
+@import "./admin.css" layer(components);
+@import "../js/keyboard/kitaq-keyboard.css";
+
+@source "../views";
+
+@layer components {
+  .st-wrap{max-width:520px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:0 0 24px}
+  .st-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px}
+  .st-head img{height:34px}
+  .pad{padding:0 18px}
+  .login{padding-top:34px}
+  .lg-logo{display:block;width:250px;max-width:80%;margin:0 auto 18px}
+  .school{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:20px}
+  .school b{display:block}.school small{color:var(--text-muted)}
+  .school img{width:44px;height:44px;object-fit:contain}
+  .lbl{display:block;font-weight:700;font-size:13px;margin:12px 0 6px}
+  .input.xl{height:54px;font-size:20px;letter-spacing:.06em;border-radius:14px;width:100%}
+  .pw{position:relative}.pw button{position:absolute;right:6px;top:7px;width:40px;height:40px;border:0;background:transparent;color:var(--text-muted);cursor:pointer}
+  .st-hint{color:var(--text-muted);font-size:12.5px;display:block;margin-top:6px}
+  .link{display:block;text-align:center;margin-top:14px;color:var(--info);font-weight:600}
+  .by{text-align:center;margin-top:26px;font-size:11.5px;color:var(--text-muted)}
+  .btn-xl{height:54px;width:100%;font-size:16px;border-radius:14px}
+  .hello h2{font-size:22px;letter-spacing:-.01em;font-weight:700}.hello p{color:var(--text-muted)}
+  .exam-card{background:linear-gradient(135deg,#022684,#0a46c8);color:#fff;border-radius:20px;padding:20px;margin:16px 0;position:relative;overflow:hidden}
+  .exam-card::after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+  .exam-card small{opacity:.8}.exam-card h3{font-size:20px;margin:4px 0 10px;font-weight:700}
+  .exam-card .meta{display:flex;gap:14px;font-size:13px;opacity:.9;margin-bottom:16px;flex-wrap:wrap}
+  .btn-white{background:#fff;color:#022684;font-weight:700}
+  .btn-white:disabled{opacity:.6}
+  .list-item{display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:10px}
+  .list-item .t{flex:1;min-width:0}.list-item b{display:block}.list-item small{color:var(--text-muted)}
+  .list-item.install{border-style:dashed;border-color:var(--info)}
+  .score{font-size:18px;font-weight:800;color:var(--success)}
+  .sec{font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin:20px 0 10px}
+  .rules{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:6px 16px;margin:14px 0}
+  .rule{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start}.rule:last-child{border:0}
+  .rule .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}
+  .rule b{display:block;font-size:14px}.rule small{color:var(--text-muted)}
+  .kv{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+  .kv div{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px}.kv small{color:var(--text-muted);display:block}.kv b{font-size:15px}
+  .sticky-cta{position:sticky;bottom:0;padding:14px 18px 22px;background:linear-gradient(180deg,transparent,var(--bg) 30%)}
+  .res-score{font-size:84px;font-weight:800;letter-spacing:-.04em;color:var(--primary);line-height:1}
+  .res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0}.res-grid div{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 6px;text-align:center}.res-grid b{display:block;font-size:22px}.res-grid small{color:var(--text-muted)}
+  .token-kb{position:fixed;left:0;right:0;bottom:0;z-index:30}
+  .guide-step{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border)}
+  .guide-step .n{width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:800;flex:none}
+}

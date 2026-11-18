@@ -1,0 +1,9 @@
+/* KITAQ ONLINE — CSS admin & halaman siswa non-ujian (Tailwind v4). Tanpa CDN. */
+@import "tailwindcss";
+@import "./kitaq-theme.css";
+@import "./admin.css" layer(components);
+@import "katex/dist/katex.min.css";
+
+@source "../views";
+@source "../js";
+@source "../../app/Livewire";

@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KITAQ ONLINE — Prototipe Dashboard Admin</title>
+<link rel="icon" href="../public/favicon.ico">
+<link rel="stylesheet" href="kitaq-ui.css">
+<!-- Prototipe acuan desain. Data contoh. Tanpa CDN. Grafik memakai HTML/SVG; di aplikasi nyata gunakan Chart.js lokal. -->
+</head>
+<body>
+
+<!-- Sprite ikon (gaya Lucide, SVG lokal) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+    <symbol id="i-server" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-school" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+    <symbol id="i-fq" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9.5 13a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7"/><line x1="12" y1="19" x2="12.01" y2="19"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="i-bars" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-unlock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></symbol>
+    <symbol id="i-wifioff" viewBox="0 0 24 24"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="i-checkc" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></symbol>
+    <symbol id="i-volumeoff" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></symbol>
+    <symbol id="i-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></symbol>
+    <symbol id="i-trend" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></symbol>
+  </defs>
+</svg>
+
+<div class="app" id="app">
+  <!-- ========== SIDEBAR ========== -->
+  <aside class="sidebar" aria-label="Navigasi utama">
+    <div class="brand-card"><img class="full" src="../branding/kitaq-online-logo.png" alt="KITAQ ONLINE"><img class="mark" src="../branding/ciptakita-mark.png" alt="KITAQ"></div>
+    <nav class="nav" id="nav">
+      <div class="nav-label">Utama</div>
+      <button class="nav-item active" data-go="dashboard"><svg class="ico"><use href="#i-dash"/></svg><span>Dashboard</span></button>
+      <button class="nav-item" data-go="monitoring"><svg class="ico"><use href="#i-activity"/></svg><span>Monitoring Live</span><em class="count" id="navLocked" style="font-style:normal">1</em></button>
+      <button class="nav-item" data-go="sesi"><svg class="ico"><use href="#i-key"/></svg><span>Sesi &amp; Token</span></button>
+      <div class="nav-label">Akademik</div>
+      <button class="nav-item" data-go="siswa"><svg class="ico"><use href="#i-users"/></svg><span>Siswa</span></button>
+      <button class="nav-item" data-go="x"><svg class="ico"><use href="#i-school"/></svg><span>Kelas</span></button>
+      <button class="nav-item" data-go="x"><svg class="ico"><use href="#i-book"/></svg><span>Mata Pelajaran</span></button>
+      <div class="nav-label">Ujian</div>
+      <button class="nav-item" data-go="x"><svg class="ico"><use href="#i-fq"/></svg><span>Bank Soal</span></button>
+      <button class="nav-item" data-go="x"><svg class="ico"><use href="#i-pencil"/></svg><span>Ujian</span></button>
+      <button class="nav-item" data-go="x"><svg class="ico"><use href="#i-cal"/></svg><span>Jadwal</span></button>
+      <div class="nav-label">Laporan</div>
+      <button class="nav-item" data-go="x"><svg class="ico"><use href="#i-bars"/></svg><span>Rekap Nilai</span></button>
+      <button class="nav-item" data-go="x"><svg class="ico"><use href="#i-shield"/></svg><span>Pelanggaran</span></button>
+      <div class="nav-label">Sistem</div>
+      <button class="nav-item" data-go="x"><svg class="ico"><use href="#i-sliders"/></svg><span>Pengaturan</span></button>
+    </nav>
+    <div class="sidebar-foot"><b>KITAQ ONLINE</b> v1.0.0<br>© 2026 CiptaKita.id</div>
+  </aside>
+
+  <!-- ========== MAIN ========== -->
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="btnMenu" aria-label="Lipat menu"><svg class="ico"><use href="#i-menu"/></svg></button>
+      <button class="search hide-mobile" id="btnSearch" aria-label="Cari (Ctrl+K)"><svg class="ico"><use href="#i-search"/></svg><span>Cari siswa, ujian, aksi…</span><kbd>Ctrl</kbd><kbd>K</kbd></button>
+      <div class="spacer"></div>
+      <button class="chip-server hide-mobile" data-go="sesi" title="Buka Sesi & Token"><i class="pulse"></i>128 siswa online</button>
+      <button class="icon-btn" id="btnBell" aria-label="Notifikasi"><svg class="ico"><use href="#i-bell"/></svg><span class="dot" id="bellDot">1</span></button>
+      <button class="icon-btn" id="btnTheme" aria-label="Ganti tema"><svg class="ico" id="themeIco"><use href="#i-moon"/></svg></button>
+      <div class="user"><span class="avatar">BM</span><div class="meta hide-mobile"><b>Bangkit Maulana</b><small>Super Admin</small></div></div>
+    </header>
+
+    <main class="content">
+
+      <!-- ===================== DASHBOARD ===================== -->
+      <section class="view show" id="v-dashboard">
+        <div class="crumbs">KITAQ ONLINE <svg class="ico sm"><use href="#i-chev"/></svg> Dashboard</div>
+        <div class="page-head">
+          <div><h1>Selamat siang, Pak Bangkit 👋</h1><p>Rabu, 18 November 2026 · Tahun ajaran 2026/2027 Ganjil</p></div>
+          <div class="actions"><button class="btn btn-secondary"><svg class="ico"><use href="#i-download"/></svg>Unduh Rekap</button><button class="btn btn-primary" data-go="monitoring"><svg class="ico"><use href="#i-activity"/></svg>Buka Monitoring</button></div>
+        </div>
+
+        <div class="grid g-stats">
+          <div class="card stat"><div class="chip tone-brand"><svg class="ico lg"><use href="#i-users"/></svg></div><div><div class="label">Siswa aktif</div><div class="value tabular">1.248</div><div class="delta up"><svg class="ico sm"><use href="#i-trend"/></svg>+24 semester ini</div></div></div>
+          <div class="card stat"><div class="chip tone-info"><svg class="ico lg"><use href="#i-cal"/></svg></div><div><div class="label">Ujian hari ini</div><div class="value tabular">6</div><div class="delta muted">2 berlangsung · 3 menunggu</div></div></div>
+          <div class="card stat"><div class="chip tone-success"><svg class="ico lg"><use href="#i-wifi"/></svg></div><div><div class="label">Siswa online</div><div class="value tabular">128</div><div class="delta up">dari 140 peserta hari ini</div></div></div>
+          <div class="card stat"><div class="chip tone-danger"><svg class="ico lg"><use href="#i-shield"/></svg></div><div><div class="label">Pelanggaran hari ini</div><div class="value tabular" id="statViol">14</div><div class="delta down"><svg class="ico sm"><use href="#i-lock"/></svg><span id="statLocked">1</span> sedang terkunci</div></div></div>
+        </div>
+
+        <div class="grid g-2" style="margin-bottom:16px">
+          <div class="card">
+            <div class="card-head"><div><h2>Rata-rata nilai per mata pelajaran</h2><p>PTS Ganjil 2026/2027 · KKM 75</p></div><span class="badge tone-info"><i class="d"></i>Live</span></div>
+            <div class="card-body">
+              <div class="bars" id="bars"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h2>Pelanggaran per jam</h2><p>Hari ini</p></div></div>
+            <div class="card-body">
+              <svg viewBox="0 0 320 190" width="100%" role="img" aria-label="Grafik pelanggaran per jam">
+                <defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".35"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+                <g stroke="var(--border)"><line x1="30" y1="20" x2="310" y2="20"/><line x1="30" y1="65" x2="310" y2="65"/><line x1="30" y1="110" x2="310" y2="110"/><line x1="30" y1="155" x2="310" y2="155"/></g>
+                <g fill="var(--text-muted)" font-size="10"><text x="6" y="24">8</text><text x="6" y="69">6</text><text x="6" y="114">4</text><text x="6" y="159">2</text>
+                <text x="30" y="178">07</text><text x="96" y="178">08</text><text x="162" y="178">09</text><text x="228" y="178">10</text><text x="294" y="178">11</text></g>
+                <path d="M30 150 L96 95 L162 40 L228 110 L294 130 L294 155 L30 155Z" fill="url(#ga)"/>
+                <polyline points="30,150 96,95 162,40 228,110 294,130" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+                <g fill="var(--surface)" stroke="var(--accent)" stroke-width="2.5"><circle cx="30" cy="150" r="4"/><circle cx="96" cy="95" r="4"/><circle cx="162" cy="40" r="4"/><circle cx="228" cy="110" r="4"/><circle cx="294" cy="130" r="4"/></g>
+              </svg>
+              <div class="legend" style="margin-top:6px"><span><i style="background:var(--accent)"></i>Peringatan &amp; kunci</span><span class="muted">Puncak 09.00 (8 kejadian)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid g-2">
+          <div class="card">
+            <div class="card-head"><div><h2>Ujian hari ini</h2><p>Jadwal sesuai kelas dan sesi</p></div><button class="btn btn-secondary sm" data-go="x">Lihat semua</button></div>
+            <div class="table-wrap" style="max-height:none;margin-top:12px">
+              <table>
+                <thead><tr><th>Jam</th><th>Ujian</th><th>Kelas</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td class="tabular">07.30–09.00</td><td><b>PTS Bahasa Indonesia</b><br><small class="muted">40 soal · 90 menit</small></td><td>XII IPS 1–3</td><td><span class="status st-active"><i class="d" style="width:6px;height:6px;border-radius:50%;background:currentColor"></i>Berlangsung</span></td><td><button class="btn btn-primary sm" data-go="monitoring">Pantau</button></td></tr>
+                  <tr><td class="tabular">07.30–09.00</td><td><b>PTS Matematika</b><br><small class="muted">35 soal · 90 menit</small></td><td>XI MIPA 1–2</td><td><span class="status st-active"><i class="d" style="width:6px;height:6px;border-radius:50%;background:currentColor"></i>Berlangsung</span></td><td><button class="btn btn-primary sm" data-go="monitoring">Pantau</button></td></tr>
+                  <tr><td class="tabular">09.30–11.00</td><td><b>PTS Bahasa Inggris</b><br><small class="muted">40 soal · 90 menit</small></td><td>XI IPS 1–2</td><td><span class="status st-idle">Menunggu</span></td><td><button class="btn btn-secondary sm"><svg class="ico sm"><use href="#i-play"/></svg>Mulai</button></td></tr>
+                  <tr><td class="tabular">09.30–11.00</td><td><b>PTS Sejarah</b><br><small class="muted">30 soal · 60 menit</small></td><td>X-1 s.d. X-4</td><td><span class="status st-idle">Menunggu</span></td><td><button class="btn btn-secondary sm"><svg class="ico sm"><use href="#i-play"/></svg>Mulai</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h2>Perlu perhatian</h2><p>Butuh tindakan Anda</p></div></div>
+            <div class="card-body" style="padding-top:8px">
+              <div class="check-row"><div class="ic tone-danger"><svg class="ico sm"><use href="#i-lock"/></svg></div><div><b>1 siswa terkunci</b><small>Ahmad Rizky F. · XII IPS 1 · terjemahan browser terdeteksi</small></div><button class="btn btn-soft-danger sm" style="margin-left:auto" data-go="monitoring">Tangani</button></div>
+              <div class="check-row"><div class="ic tone-warning"><svg class="ico sm"><use href="#i-warn"/></svg></div><div><b>Login dari perangkat lain</b><small>Gita Maharani · ditolak, menunggu Reset Login</small></div><button class="btn btn-secondary sm" style="margin-left:auto" data-go="monitoring">Lihat</button></div>
+              <div class="check-row"><div class="ic tone-success"><svg class="ico sm"><use href="#i-checkc"/></svg></div><div><b>Backup terakhir berhasil</b><small>Hari ini 02.00 · backup harian otomatis (cron)</small></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== MONITORING ===================== -->
+      <section class="view" id="v-monitoring">
+        <div class="crumbs">KITAQ ONLINE <svg class="ico sm"><use href="#i-chev"/></svg> Monitoring Live</div>
+        <div class="page-head">
+          <div><h1>PTS Bahasa Indonesia</h1><p>XII IPS 1–3 · Sesi 1 · Ruang Lab 1 · sisa waktu <b class="tabular" id="clock">58:12</b></p></div>
+          <div class="actions">
+            <button class="btn btn-secondary" id="btnMute"><svg class="ico" id="muteIco"><use href="#i-volume"/></svg><span id="muteTxt">Alarm aktif</span></button>
+            <button class="btn btn-secondary"><svg class="ico"><use href="#i-pause"/></svg>Jeda semua</button>
+            <button class="btn btn-secondary"><svg class="ico"><use href="#i-clock"/></svg>Perpanjang</button>
+            <button class="btn btn-soft-danger" id="btnForce"><svg class="ico"><use href="#i-x"/></svg>Tutup paksa</button>
+            <button class="btn btn-primary" id="btnSim"><svg class="ico"><use href="#i-warn"/></svg>Simulasikan pelanggaran</button>
+          </div>
+        </div>
+
+        <div class="sumchips" id="sumchips"></div>
+
+        <div class="mon">
+          <div><div class="g-students" id="grid"></div></div>
+          <aside class="card" style="position:sticky;top:84px">
+            <div class="card-head"><div><h2>Feed pelanggaran</h2><p>Realtime</p></div><span class="badge tone-danger" id="feedCount">1 baru</span></div>
+            <div class="feed" id="feed" style="margin-top:10px"></div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ===================== SISWA ===================== -->
+      <section class="view" id="v-siswa">
+        <div class="crumbs">KITAQ ONLINE <svg class="ico sm"><use href="#i-chev"/></svg> Akademik <svg class="ico sm"><use href="#i-chev"/></svg> Siswa</div>
+        <div class="page-head">
+          <div><h1>Data Siswa</h1><p>Kelola data siswa satuan atau massal lewat Excel</p></div>
+          <div class="actions">
+            <button class="btn btn-secondary"><svg class="ico"><use href="#i-download"/></svg>Unduh Template</button>
+            <button class="btn btn-secondary" id="btnImport"><svg class="ico"><use href="#i-upload"/></svg>Import Excel</button>
+            <button class="btn btn-primary"><svg class="ico"><use href="#i-plus"/></svg>Tambah Siswa</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="toolbar">
+            <div class="input-ico grow"><svg class="ico"><use href="#i-search"/></svg><input class="input" id="q" placeholder="Cari nama atau NISN…" aria-label="Cari siswa"></div>
+            <select class="select" aria-label="Filter kelas"><option>Semua kelas</option><option>XII IPS 1</option><option>XII IPS 2</option><option>XI MIPA 1</option></select>
+            <select class="select" aria-label="Filter status"><option>Semua status</option><option>Aktif</option><option>Nonaktif</option></select>
+            <span class="spacer"></span><span class="muted" id="countTxt"></span>
+          </div>
+          <div class="table-wrap">
+            <table id="tbl">
+              <thead><tr><th style="width:44px"><input type="checkbox" class="check" id="all" aria-label="Pilih semua"></th><th>Siswa</th><th>NISN</th><th>Kelas</th><th>Tgl lahir</th><th>Login terakhir</th><th>Status</th><th style="width:60px"></th></tr></thead>
+              <tbody id="tb"></tbody>
+            </table>
+          </div>
+          <div class="tfoot"><span id="rowInfo"></span><div class="pager"><button>‹</button><button class="on">1</button><button>2</button><button>3</button><button>›</button></div></div>
+        </div>
+        <div class="bulkbar" id="bulk"><b id="bulkN">0</b> siswa dipilih
+          <button class="btn btn-ghost sm">Reset password</button><button class="btn btn-ghost sm">Pindah kelas</button><button class="btn btn-ghost sm">Cetak kartu login</button><button class="btn btn-danger sm">Hapus</button>
+          <button class="icon-btn" id="bulkX" aria-label="Batal pilih" style="color:#cfd9f5;width:32px;height:32px"><svg class="ico sm"><use href="#i-x"/></svg></button></div>
+      </section>
+
+      <!-- ===================== SESI & TOKEN ===================== -->
+      <section class="view" id="v-sesi">
+        <div class="crumbs">KITAQ ONLINE <svg class="ico sm"><use href="#i-chev"/></svg> Sesi &amp; Token</div>
+        <div class="page-head">
+          <div><h1>Sesi &amp; Token</h1><p>Rabu, 18 November 2026 · Token berganti otomatis tiap 15 menit</p></div>
+          <div class="actions"><button class="btn btn-secondary" id="btnCopyTok"><svg class="ico"><use href="#i-copy"/></svg>Salin token</button><button class="btn btn-primary" id="btnProj"><svg class="ico"><use href="#i-monitor"/></svg>Layar Proyektor</button></div>
+        </div>
+
+        <div class="grid g-2b">
+          <div class="card"><div class="card-head"><div><h2>Token aktif · PTS Bahasa Indonesia</h2><p>XII IPS 1–3 · Sesi 1 · dibutuhkan saat siswa memulai/melanjutkan</p></div><span class="badge tone-success"><i class="d"></i>Wajib token</span></div>
+            <div class="card-body tokbox">
+              <div class="ring"><svg viewBox="0 0 120 120" width="132" height="132"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--surface-2)" stroke-width="10"/><circle id="ringArc" cx="60" cy="60" r="52" fill="none" stroke="var(--info)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="0" transform="rotate(-90 60 60)"/></svg><div class="ring-t"><b class="tabular" id="tokLeft">14:32</b><small>ganti token</small></div></div>
+              <div><div class="muted" style="font-size:13px">Bacakan atau tampilkan di proyektor</div><div class="token tabular" id="tokNow">7QK 4MZ</div>
+                <div class="muted" style="margin-top:8px">Alamat siswa: <b style="color:var(--text)">ujian.sman1ciruas.sch.id</b></div>
+                <div class="muted" style="font-size:12px;margin-top:6px">Token lama masih diterima 15 menit setelah berganti.</div></div>
+            </div></div>
+          <div class="card"><div class="card-head"><div><h2>Kesehatan sistem</h2><p>Shared hosting · polling</p></div><span class="badge tone-success"><i class="d"></i>Baik</span></div>
+            <div class="card-body" style="padding-top:6px">
+              <div class="svc"><i class="lamp"></i><div><b>Cron / penjadwal</b><small>Terakhir jalan 14 detik lalu</small></div><span class="badge tone-success" style="margin-left:auto">OK</span></div>
+              <div class="svc"><i class="lamp"></i><div><b>Antrean</b><small>0 pekerjaan menunggu</small></div><span class="badge tone-success" style="margin-left:auto">OK</span></div>
+              <div class="svc"><i class="lamp"></i><div><b>Respons API (p95)</b><small>heartbeat 210 ms · simpan jawaban 260 ms</small></div><span class="badge tone-success" style="margin-left:auto">Cepat</span></div>
+              <div class="svc"><i class="lamp" style="background:var(--warning);box-shadow:0 0 0 4px var(--warning-soft)"></i><div><b>Siswa online</b><small>128 dari 140 peserta hari ini</small></div><span class="badge tone-warning" style="margin-left:auto">12 belum</span></div>
+            </div></div>
+        </div>
+
+        <div class="grid g-2" style="margin-top:16px">
+          <div class="card">
+            <div class="card-head"><div><h2>Sesi hari ini</h2><p>Mulai &amp; tutup otomatis sesuai jadwal</p></div></div>
+            <div class="table-wrap" style="max-height:none;margin-top:12px"><table>
+              <thead><tr><th>Jam</th><th>Ujian</th><th>Kelas</th><th>Masuk</th><th>Profil</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td class="tabular">07.30–09.00</td><td><b>PTS Bahasa Indonesia</b></td><td>XII IPS 1–3</td><td class="tabular">104/108</td><td><span class="badge tone-info">Standar</span></td><td><span class="status st-active">Berlangsung</span></td></tr>
+                <tr><td class="tabular">07.30–09.00</td><td><b>PTS Matematika</b></td><td>XI MIPA 1–2</td><td class="tabular">24/32</td><td><span class="badge tone-danger">Ketat</span></td><td><span class="status st-active">Berlangsung</span></td></tr>
+                <tr><td class="tabular">09.30–11.00</td><td><b>PTS Bahasa Inggris</b></td><td>XI IPS 1–2</td><td class="tabular">0/70</td><td><span class="badge tone-info">Standar</span></td><td><span class="status st-idle">Menunggu</span></td></tr>
+              </tbody></table></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h2>Profil keketatan: Standar</h2><p>Bisa diubah per ujian</p></div></div>
+            <div class="card-body" style="padding-top:6px">
+              <div class="check-row"><div class="ic tone-danger"><svg class="ico sm"><use href="#i-lock"/></svg></div><div><b>Langsung kunci</b><small>Terjemahan browser · ekstensi AI · dua tab/perangkat · teks soal diubah</small></div></div>
+              <div class="check-row"><div class="ic tone-warning"><svg class="ico sm"><use href="#i-warn"/></svg></div><div><b>Peringatan (ke-3 mengunci)</b><small>Pindah aplikasi · split screen · keluar layar penuh · keyboard fisik</small></div></div>
+              <div class="check-row"><div class="ic tone-neutral"><svg class="ico sm"><use href="#i-file"/></svg></div><div><b>Hanya dicatat</b><small>Salin/tempel · klik kanan · putus koneksi</small></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Halaman lain -->
+      <section class="view" id="v-x">
+        <div class="card"><div class="card-body" style="text-align:center;padding:64px 20px">
+          <div class="chip tone-brand" style="width:64px;height:64px;border-radius:18px;display:grid;place-items:center;margin:0 auto 14px"><svg class="ico lg"><use href="#i-file"/></svg></div>
+          <h2 style="font-size:18px">Halaman ini belum ada di prototipe</h2><p class="muted" style="margin:6px 0 16px">Ikuti pola halaman di docs/DESIGN_SYSTEM.md (Bagian 5) dan komponen yang sama.</p>
+          <button class="btn btn-primary" data-go="dashboard">Kembali ke Dashboard</button></div></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- ===== Modal: Buka kunci ===== -->
+<div class="overlay" id="mUnlock" role="dialog" aria-modal="true" aria-labelledby="mUnlockT">
+  <div class="modal"><div class="modal-body" style="padding-top:24px">
+    <div class="big-ico tone-warning"><svg class="ico lg"><use href="#i-unlock"/></svg></div>
+    <h2 id="mUnlockT" style="font-size:18px">Buka kunci ujian?</h2>
+    <p class="muted" style="margin:6px 0 16px"><b id="mUnlockWho" style="color:var(--text)"></b> akan dapat melanjutkan ujian. Jawaban sebelumnya tetap tersimpan.</p>
+    <div class="field" style="margin-bottom:12px"><label for="why">Alasan (wajib, dicatat di log)</label><input class="input" id="why" placeholder="Contoh: HP diperiksa, terjemahan & aplikasi lain sudah ditutup"></div>
+    <label style="display:flex;gap:10px;align-items:center;font-size:13px"><input type="checkbox" class="check" checked> Reset jumlah peringatan siswa ini</label>
+  </div>
+  <div class="modal-foot"><button class="btn btn-secondary" data-close>Batal</button><button class="btn btn-primary" id="doUnlock"><svg class="ico"><use href="#i-unlock"/></svg>Buka kunci</button></div></div>
+</div>
+
+<!-- ===== Modal: Tutup paksa ===== -->
+<div class="overlay" id="mForce" role="dialog" aria-modal="true">
+  <div class="modal"><div class="modal-body" style="padding-top:24px">
+    <div class="big-ico tone-danger"><svg class="ico lg"><use href="#i-warn"/></svg></div>
+    <h2 style="font-size:18px">Tutup paksa ujian ini?</h2>
+    <p class="muted" style="margin:6px 0 4px">Semua jawaban siswa akan dikumpulkan otomatis dan ujian <b style="color:var(--text)">PTS Bahasa Indonesia</b> ditutup untuk 3 kelas. Tindakan ini tidak dapat dibatalkan.</p></div>
+  <div class="modal-foot"><button class="btn btn-secondary" data-close>Batal</button><button class="btn btn-danger" data-close data-toast="Ujian ditutup|Semua jawaban terkumpul otomatis.|success">Ya, tutup paksa</button></div></div>
+</div>
+
+<!-- ===== Modal: Import wizard ===== -->
+<div class="overlay" id="mImport" role="dialog" aria-modal="true" aria-labelledby="mImportT">
+  <div class="modal lg">
+    <div class="modal-head"><h2 id="mImportT">Import Siswa dari Excel</h2><button class="icon-btn" data-close aria-label="Tutup"><svg class="ico"><use href="#i-x"/></svg></button></div>
+    <div class="modal-body">
+      <div class="stepper" id="stepper">
+        <div class="step on" data-s="1"><span class="n">1</span>Unggah</div><span class="step-line"></span>
+        <div class="step" data-s="2"><span class="n">2</span>Pratinjau</div><span class="step-line"></span>
+        <div class="step" data-s="3"><span class="n">3</span>Hasil</div>
+      </div>
+      <div id="s1">
+        <div class="dropzone"><svg class="ico"><use href="#i-upload"/></svg><div><b style="color:var(--text)">Seret file Excel ke sini</b> atau klik untuk memilih</div><small>.xlsx · maksimal 5 MB · template_siswa.xlsx (NISN + tanggal lahir)</small></div>
+        <div style="display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;font-size:13px">
+          <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" class="check" checked> Perbarui bila NISN sudah ada</label>
+          <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" class="check" checked> Buat kelas otomatis bila belum ada</label>
+        </div>
+      </div>
+      <div id="s2" style="display:none">
+        <div class="alert warning"><svg class="ico lg"><use href="#i-warn"/></svg><div><b>480 baris valid · 12 baris perlu diperbaiki</b><p>Baris galat tidak akan diimpor. Unduh laporan, perbaiki, lalu unggah ulang.</p></div><button class="btn btn-secondary sm"><svg class="ico sm"><use href="#i-download"/></svg>Laporan galat</button></div>
+        <div class="table-wrap" style="max-height:230px;border:1px solid var(--border);border-radius:12px"><table>
+          <thead><tr><th>Baris</th><th>NISN</th><th>Nama</th><th>Tgl lahir</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>2</td><td class="tabular">0081234561</td><td>Aisyah Putri R.</td><td>20/10/2008</td><td><span class="badge tone-success">Valid</span></td></tr>
+            <tr><td>3</td><td class="tabular">0084412093</td><td>Bagas Pratama</td><td>11 Juli 2008</td><td><span class="badge tone-success">Valid</span></td></tr>
+            <tr><td>4</td><td class="tabular">0087730215</td><td>Citra Lestari</td><td>39806</td><td><span class="badge tone-warning">Serial Excel → 24/12/2008</span></td></tr>
+            <tr><td>5</td><td class="tabular">812345</td><td>Dimas Anggara</td><td>09-05-2008</td><td><span class="badge tone-danger">NISN bukan 10 digit</span></td></tr>
+            <tr><td>6</td><td class="tabular">0089921470</td><td>Eka Wulandari</td><td>31/02/2008</td><td><span class="badge tone-danger">Tanggal tidak valid</span></td></tr>
+          </tbody></table></div>
+      </div>
+      <div id="s3" style="display:none;text-align:center;padding:10px 0 4px">
+        <div class="big-ico tone-success" style="margin:0 auto 12px"><svg class="ico lg"><use href="#i-checkc"/></svg></div>
+        <h2 style="font-size:18px">Import selesai</h2>
+        <div style="display:flex;gap:12px;justify-content:center;margin:16px 0 6px;flex-wrap:wrap">
+          <div class="card" style="padding:12px 22px"><div class="value tabular" style="font-size:26px;font-weight:800;color:var(--success)">468</div><small class="muted">Berhasil</small></div>
+          <div class="card" style="padding:12px 22px"><div class="value tabular" style="font-size:26px;font-weight:800;color:var(--info)">12</div><small class="muted">Diperbarui</small></div>
+          <div class="card" style="padding:12px 22px"><div class="value tabular" style="font-size:26px;font-weight:800;color:var(--accent)">12</div><small class="muted">Gagal</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-secondary" data-close id="impCancel">Batal</button><button class="btn btn-primary" id="impNext">Lanjut: Pratinjau</button></div>
+  </div>
+</div>
+
+<!-- ===== Layar proyektor ===== -->
+<div class="overlay" id="mProj" role="dialog" aria-modal="true" aria-label="Layar proyektor">
+  <div class="projector">
+    <img src="../branding/kitaq-online-logo-dark.png" alt="KITAQ ONLINE" height="54">
+    <div class="p-label">Buka di browser HP</div><div class="p-addr">ujian.sman1ciruas.sch.id</div>
+    <div class="p-label">Token ujian</div><div class="p-token tabular" id="projTok">7QK 4MZ</div>
+    <div class="p-label">Berganti dalam <b class="tabular" id="projLeft">14:32</b></div>
+    <button class="btn btn-secondary" data-close style="margin-top:22px">Tutup</button>
+  </div>
+</div>
+
+<!-- ===== Command palette ===== -->
+<div class="overlay" id="mPal" role="dialog" aria-modal="true" aria-label="Pencarian cepat">
+  <div class="palette"><input id="palQ" placeholder="Ketik untuk mencari halaman, siswa, atau aksi…" autocomplete="off"><ul id="palList"></ul></div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+(function(){
+  'use strict';
+  var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var ICON=function(id,c){return '<svg class="ico '+(c||'')+'"><use href="#i-'+id+'"/></svg>'};
+
+  /* ---- Tema ---- */
+  var root=document.documentElement;
+  function setTheme(t){root.setAttribute('data-theme',t);$('#themeIco').innerHTML='<use href="#i-'+(t==='dark'?'sun':'moon')+'"/>';try{localStorage.setItem('kitaq-theme',t)}catch(e){}}
+  var saved=null;try{saved=localStorage.getItem('kitaq-theme')}catch(e){}
+  setTheme(saved||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
+  $('#btnTheme').onclick=function(){setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark')};
+
+  /* ---- Sidebar ---- */
+  var app=$('#app');
+  $('#btnMenu').onclick=function(){ if(innerWidth<=900) app.classList.toggle('open'); else app.classList.toggle('collapsed'); };
+
+  /* ---- Navigasi tampilan ---- */
+  function go(v){
+    if(!$('#v-'+v)) v='x';
+    $$('.view').forEach(function(e){e.classList.remove('show')});
+    $('#v-'+v).classList.add('show');
+    $$('.nav-item').forEach(function(n){n.classList.toggle('active',n.dataset.go===v&&v!=='x')});
+    app.classList.remove('open'); scrollTo(0,0);
+    if(location.hash!=='#'+v) history.replaceState(null,'','#'+v);
+  }
+  document.addEventListener('click',function(e){
+    var g=e.target.closest('[data-go]'); if(g){go(g.dataset.go)}
+    var c=e.target.closest('[data-close]'); if(c){var o=c.closest('.overlay'); if(o)o.classList.remove('show'); var t=c.dataset.toast; if(t){var p=t.split('|');toast(p[0],p[1],p[2])}}
+    if(e.target.classList.contains('overlay')) e.target.classList.remove('show');
+  });
+  window.addEventListener('hashchange',function(){go(location.hash.slice(1)||'dashboard')});
+
+  /* ---- Toast ---- */
+  var TONE={success:['var(--success)','checkc'],danger:['var(--accent)','lock'],warning:['var(--warning)','warn'],info:['var(--info)','activity']};
+  function toast(t,m,tone){tone=TONE[tone]?tone:'info';var d=document.createElement('div');d.className='toast';d.style.setProperty('--c',TONE[tone][0]);
+    d.innerHTML='<span class="ic">'+ICON(TONE[tone][1],'lg')+'</span><div><b></b><small></small></div>';d.querySelector('b').textContent=t;d.querySelector('small').textContent=m||'';
+    $('#toasts').appendChild(d);setTimeout(function(){d.style.opacity='0';d.style.transition='.3s';setTimeout(function(){d.remove()},300)},4200)}
+
+  /* ---- Dashboard: batang ---- */
+  var mp=[['B. Indonesia',82],['Matematika',74],['B. Inggris',79],['Biologi',77],['Sejarah',85]];
+  $('#bars').innerHTML=mp.map(function(m){return '<div class="bar"><b class="tabular">'+m[1]+'</b><i style="height:'+(m[1]*1.9)+'px;'+(m[1]<75?'background:linear-gradient(180deg,var(--warning),var(--accent))':'')+'"></i><small>'+m[0]+'</small></div>'}).join('');
+
+  /* ---- Monitoring ---- */
+  var ST={idle:['Belum masuk','circle'],active:['Mengerjakan','pencil'],warned:['Peringatan','warn'],locked:['Terkunci','lock'],offline:['Terputus','wifioff'],done:['Selesai','checkc']};
+  var names=[['Aisyah Putri R.','active',24],['Ahmad Rizky F.','locked',17],['Bagas Pratama','active',31],['Citra Lestari','warned',19],['Dimas Anggara','active',22],['Eka Wulandari','done',40],['Fajar Nugroho','active',28],['Gita Maharani','active',15],['Hafidz Alfarizi','offline',12],['Indah Permata','active',33],['Joko Susilo','idle',0],['Kirana Dewi','active',26],['Lutfi Hakim','warned',21],['Mawar Anggraini','active',29],['Naufal Ramadhan','done',40],['Olivia Safitri','active',18],['Putra Wijaya','active',35],['Qonita Azzahra','idle',0],['Rangga Saputra','active',20],['Salsabila Nur','active',27]];
+  var DEV=['Android · Chrome','iPhone · Safari PWA','Android · Samsung','Huawei · HarmonyOS','Android · Chrome','iPad · Safari'];var ips=function(i){return DEV[i%DEV.length]};
+  var students=names.map(function(n,i){return {name:n[0],st:n[1],done:n[2],warn:n[1]==='locked'?3:n[1]==='warned'?(i%2?2:1):0,ip:ips(i),kelas:'XII IPS '+(1+i%3)}});
+  var filter='all',muted=false;
+  function initials(n){return n.split(' ').slice(0,2).map(function(w){return w[0]}).join('')}
+  function counts(){var c={all:students.length};Object.keys(ST).forEach(function(k){c[k]=0});students.forEach(function(s){c[s.st]++});return c}
+  function renderChips(){var c=counts();var h='<button class="sumchip '+(filter==='all'?'on':'')+'" data-f="all"><b>'+c.all+'</b><small>Semua</small></button>';
+    Object.keys(ST).forEach(function(k){h+='<button class="sumchip st-'+k+(filter===k?' on':'')+'" data-f="'+k+'"><b>'+c[k]+'</b><small>'+ST[k][0]+'</small></button>'});
+    $('#sumchips').innerHTML=h;$('#navLocked').textContent=c.locked;$('#navLocked').style.display=c.locked?'':'none';$('#statLocked').textContent=c.locked}
+  function renderGrid(){var list=students.map(function(s,i){return {s:s,i:i}}).filter(function(x){return filter==='all'||x.s.st===filter});
+    list.sort(function(a,b){return (b.s.st==='locked')-(a.s.st==='locked')});
+    $('#grid').innerHTML=list.map(function(x){var s=x.s,i=x.i,pct=Math.round(s.done/40*100);
+      var warnTxt=s.st==='warned'?'<span class="status st-warned">'+ICON('warn','sm')+'Peringatan '+s.warn+'/2</span>':'<span class="status st-'+s.st+'">'+ICON(ST[s.st][1],'sm')+ST[s.st][0]+'</span>';
+      var foot=s.st==='locked'?'<button class="btn btn-primary sm" data-unlock="'+i+'">'+ICON('unlock','sm')+'Buka kunci</button><button class="btn btn-secondary sm">Log</button>':
+        s.st==='offline'?'<button class="btn btn-secondary sm">Reset login</button><button class="btn btn-secondary sm">Log</button>':
+        s.st==='idle'?'<button class="btn btn-secondary sm">Reset login</button>':
+        s.st==='done'?'<button class="btn btn-secondary sm">Lihat hasil</button>':'<button class="btn btn-secondary sm">+ Waktu</button><button class="btn btn-secondary sm">Log</button>';
+      return '<div class="sc st-'+s.st+(s.st==='locked'?' locked':'')+'"><div class="top"><span class="avatar">'+initials(s.name)+'</span><div><b>'+s.name+'</b><small>'+s.kelas+' · '+s.ip+'</small></div></div>'+
+      '<div style="margin-top:10px">'+warnTxt+'</div><div class="row"><span>Progres</span><b class="tabular">'+s.done+'/40</b></div><div class="progress prog"><i style="width:'+pct+'%;background:var(--c)"></i></div>'+
+      '<div class="row"><span>Pelanggaran</span><b class="tabular">'+s.warn+'</b></div><div class="foot">'+foot+'</div></div>'}).join('');
+    $$('[data-unlock]').forEach(function(b){b.onclick=function(){openUnlock(+b.dataset.unlock)}})}
+  function render(){renderChips();renderGrid()}
+  $('#sumchips').addEventListener('click',function(e){var b=e.target.closest('[data-f]');if(b){filter=b.dataset.f;render()}});
+
+  var feedItems=[{t:'09.12',n:'Ahmad Rizky F.',m:'Terjemahan browser terdeteksi · dikunci',tone:'danger',ic:'lock'},{t:'09.05',n:'Citra Lestari',m:'Layar terpisah terdeteksi · peringatan 2/2',tone:'warning',ic:'warn'},{t:'08.58',n:'Hafidz Alfarizi',m:'Sinyal hilang 2 menit · jawaban tersimpan di HP',tone:'neutral',ic:'wifioff'},{t:'08.41',n:'Lutfi Hakim',m:'Keyboard fisik terdeteksi · peringatan 1/2',tone:'warning',ic:'warn'}];
+  function renderFeed(){$('#feed').innerHTML=feedItems.map(function(f){return '<div class="feed-item"><div class="ic tone-'+f.tone+'">'+ICON(f.ic,'sm')+'</div><div><b>'+f.n+'</b><small>'+f.m+'</small></div><time>'+f.t+'</time></div>'}).join('');}
+  renderFeed();render();
+
+  var pendingUnlock=null;
+  function openUnlock(i){pendingUnlock=i;$('#mUnlockWho').textContent=students[i].name;$('#why').value='';$('#mUnlock').classList.add('show');setTimeout(function(){$('#why').focus()},50)}
+  $('#doUnlock').onclick=function(){var w=$('#why');if(!w.value.trim()){w.style.borderColor='var(--accent)';w.placeholder='Alasan wajib diisi';w.focus();return}
+    var s=students[pendingUnlock];s.st='active';s.warn=0;$('#mUnlock').classList.remove('show');render();toast('Kunci dibuka',s.name+' dapat melanjutkan ujian.','success')};
+  $('#btnForce').onclick=function(){$('#mForce').classList.add('show')};
+  $('#btnMute').onclick=function(){muted=!muted;$('#muteTxt').textContent=muted?'Alarm dibisukan':'Alarm aktif';$('#muteIco').innerHTML='<use href="#i-'+(muted?'volumeoff':'volume')+'"/>'};
+  var SIMS=[['Layar terpisah terdeteksi',0,'warn'],['Ekstensi AI terdeteksi · dikunci',1,'lock'],['Pindah aplikasi',0,'warn'],['Dibuka di perangkat lain · dikunci',1,'lock'],['Terjemahan browser terdeteksi · dikunci',1,'lock']];var simI=0;
+  $('#btnSim').onclick=function(){var cand=students.filter(function(s){return s.st==='active'});if(!cand.length)return;var s=cand[simI%cand.length];var ev=SIMS[simI%SIMS.length];simI++;var lock=!!ev[1];
+    s.st=lock?'locked':'warned';s.warn=lock?Math.max(s.warn,1):s.warn+1;var d=new Date();var hh=('0'+d.getHours()).slice(-2)+'.'+('0'+d.getMinutes()).slice(-2);
+    feedItems.unshift({t:hh,n:s.name,m:lock?ev[0]:ev[0]+' · peringatan '+s.warn+'/2',tone:lock?'danger':'warning',ic:lock?'lock':'warn'});renderFeed();
+    $('#feedCount').textContent=(feedItems.length-3)+' baru';$('#statViol').textContent=(+$('#statViol').textContent+1);$('#bellDot').textContent=+$('#bellDot').textContent+1;
+    render();if(!muted)toast(lock?'Siswa terkunci!':'Peringatan pelanggaran',s.name+' — '+ev[0],lock?'danger':'warning')};
+  var sec=58*60+12;setInterval(function(){sec=Math.max(0,sec-1);$('#clock').textContent=('0'+Math.floor(sec/60)).slice(-2)+':'+('0'+sec%60).slice(-2)},1000);
+
+  /* ---- Siswa ---- */
+  var rows=[['Aisyah Putri Rahayu','0081234561','XII IPS 1','Hari ini 07.28','Aktif'],['Ahmad Rizky Fauzi','0081234562','XII IPS 1','Hari ini 07.30','Aktif'],['Bagas Pratama','0084412093','XII IPS 1','Hari ini 07.29','Aktif'],['Citra Lestari','0087730215','XII IPS 2','Hari ini 07.33','Aktif'],['Dimas Anggara','0080019234','XII IPS 2','Kemarin 14.10','Aktif'],['Eka Wulandari','0089921470','XII IPS 2','Hari ini 07.27','Aktif'],['Fajar Nugroho','0085538102','XII IPS 3','Hari ini 07.31','Aktif'],['Gita Maharani','0083316720','XII IPS 3','—','Nonaktif'],['Hafidz Alfarizi','0086402119','XII IPS 3','Hari ini 07.35','Aktif'],['Indah Permata Sari','0091127764','XI MIPA 1','3 hari lalu','Aktif']];
+  function renderRows(f){f=(f||'').toLowerCase();var list=rows.filter(function(r){return !f||r[0].toLowerCase().indexOf(f)>-1||r[1].indexOf(f)>-1});
+    $('#tb').innerHTML=list.length?list.map(function(r,i){return '<tr><td><input type="checkbox" class="check rowchk" aria-label="Pilih '+r[0]+'"></td><td><div class="who"><span class="avatar">'+initials(r[0])+'</span><div><b>'+r[0]+'</b><small>'+(i%2?'Laki-laki':'Perempuan')+'</small></div></div></td><td class="tabular">'+r[1]+'</td><td>'+r[2]+'</td><td class="tabular muted">'+['20','03','11','27','09','14','30','05','22','17'][i]+'-'+['10','02','07','12','05','01','08','04','11','06'][i]+'-****</td><td class="muted">'+r[3]+'</td><td>'+(r[4]==='Aktif'?'<span class="badge tone-success"><i class="d"></i>Aktif</span>':'<span class="badge tone-neutral"><i class="d"></i>Nonaktif</span>')+'</td><td><button class="icon-btn" aria-label="Aksi">'+ICON('more')+'</button></td></tr>'}).join(''):'<tr><td colspan="8" style="text-align:center;padding:48px 0"><div class="chip tone-neutral" style="width:56px;height:56px;border-radius:16px;display:grid;place-items:center;margin:0 auto 10px">'+ICON('search','lg')+'</div><b>Siswa tidak ditemukan</b><div class="muted">Coba kata kunci lain atau hapus filter.</div></td></tr>';
+    $('#countTxt').textContent=list.length+' dari 1.248 siswa';$('#rowInfo').textContent='Menampilkan 1–'+list.length+' dari 1.248';bindChecks()}
+  function bindChecks(){var chk=$$('.rowchk');function upd(){var n=chk.filter(function(c){return c.checked}).length;$('#bulkN').textContent=n;$('#bulk').classList.toggle('show',n>0);chk.forEach(function(c){c.closest('tr').classList.toggle('sel',c.checked)})}
+    chk.forEach(function(c){c.onchange=upd});$('#all').checked=false;$('#all').onchange=function(){chk.forEach(function(c){c.checked=$('#all').checked});upd()};$('#bulkX').onclick=function(){chk.forEach(function(c){c.checked=false});$('#all').checked=false;upd()}}
+  $('#q').oninput=function(){renderRows(this.value)};renderRows();
+
+  /* ---- Import wizard ---- */
+  var step=1;
+  function setStep(n){step=n;[1,2,3].forEach(function(i){$('#s'+i).style.display=i===n?'block':'none'});
+    $$('#stepper .step').forEach(function(s){var i=+s.dataset.s;s.classList.toggle('on',i===n);s.classList.toggle('done',i<n)});
+    $('#impNext').textContent=n===1?'Lanjut: Pratinjau':n===2?'Impor 480 baris':'Selesai';$('#impCancel').style.display=n===3?'none':''}
+  $('#btnImport').onclick=function(){setStep(1);$('#mImport').classList.add('show')};
+  $('#impNext').onclick=function(){if(step<3)setStep(step+1);else{$('#mImport').classList.remove('show');toast('Import berhasil','468 siswa ditambahkan, 12 diperbarui.','success')}};
+
+  /* ---- Sesi & Token (simulasi; di aplikasi nyata dari ExamTokenService) ---- */
+  var ALPH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',left=14*60+32,ROT=15*60;
+  function newTok(){var t='';for(var i=0;i<6;i++)t+=ALPH[Math.floor(Math.random()*32)];return t.slice(0,3)+' '+t.slice(3)}
+  function tokTick(){left--;if(left<=0){left=ROT;var t=newTok();$('#tokNow').textContent=t;$('#projTok').textContent=t;toast('Token berganti','Token baru: '+t,'info')}
+    var mm=('0'+Math.floor(left/60)).slice(-2)+':'+('0'+left%60).slice(-2);$('#tokLeft').textContent=mm;$('#projLeft').textContent=mm;
+    $('#ringArc').setAttribute('stroke-dashoffset',String(326.7*(1-left/ROT)))}
+  setInterval(tokTick,1000);tokTick();
+  $('#btnProj').onclick=function(){$('#mProj').classList.add('show')};
+  $('#btnCopyTok').onclick=function(){toast('Token disalin',$('#tokNow').textContent,'success')};
+
+  /* ---- Command palette ---- */
+  var cmds=[['Halaman','Dashboard','dash','dashboard'],['Halaman','Monitoring Live','activity','monitoring'],['Halaman','Sesi & Token','key','sesi'],['Halaman','Data Siswa','users','siswa'],['Aksi','Tambah siswa','plus','siswa'],['Aksi','Import siswa dari Excel','upload','import'],['Aksi','Ganti tema terang/gelap','sun','theme']];
+  var pi=0,pl=[];
+  function palRender(){var q=$('#palQ').value.toLowerCase();pl=cmds.filter(function(c){return c[1].toLowerCase().indexOf(q)>-1});var last='',h='';
+    pl.forEach(function(c,i){if(c[0]!==last){h+='<div class="gl">'+c[0]+'</div>';last=c[0]}h+='<li class="'+(i===pi?'on':'')+'" data-i="'+i+'">'+ICON(c[2])+'<span>'+c[1]+'</span><small>'+(c[0]==='Aksi'?'↵':'')+'</small></li>'});
+    $('#palList').innerHTML=h||'<div class="gl" style="text-transform:none;letter-spacing:0;padding:18px 12px">Tidak ada hasil</div>'}
+  function palOpen(){pi=0;$('#palQ').value='';palRender();$('#mPal').classList.add('show');setTimeout(function(){$('#palQ').focus()},30)}
+  function palRun(i){var c=pl[i];if(!c)return;$('#mPal').classList.remove('show');if(c[3]==='import'){go('siswa');$('#btnImport').click()}else if(c[3]==='theme'){$('#btnTheme').click()}else go(c[3])}
+  $('#btnSearch').onclick=palOpen;$('#palQ').oninput=function(){pi=0;palRender()};
+  $('#palList').addEventListener('click',function(e){var l=e.target.closest('li');if(l)palRun(+l.dataset.i)});
+  document.addEventListener('keydown',function(e){
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();palOpen()}
+    if(e.key==='Escape')$$('.overlay.show').forEach(function(o){o.classList.remove('show')});
+    if($('#mPal').classList.contains('show')){if(e.key==='ArrowDown'){e.preventDefault();pi=Math.min(pl.length-1,pi+1);palRender()}if(e.key==='ArrowUp'){e.preventDefault();pi=Math.max(0,pi-1);palRender()}if(e.key==='Enter'){palRun(pi)}}
+  });
+  $('#btnBell').onclick=function(){$('#bellDot').textContent='0';$('#bellDot').style.display='none';go('monitoring')};
+
+  go(location.hash.slice(1)||'dashboard');
+})();
+</script>
+</body>
+</html>
