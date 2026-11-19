@@ -22,12 +22,19 @@ Artisan::command('kitaq:tick', function (ScheduleService $schedules) {
     $this->info("dibuka {$r['opened']} · ditutup {$r['closed']} · dikumpulkan otomatis {$submitted} · terputus {$gaps}");
 })->purpose('Buka/tutup jadwal otomatis, kumpul otomatis saat waktu habis, deteksi heartbeat hilang');
 
-Schedule::command('kitaq:tick')->everyMinute()->withoutOverlapping(2);
-Schedule::command('queue:work --stop-when-empty --max-time=50 --tries=3 --timeout=45')->everyMinute()->withoutOverlapping(2);
+// Dijadwalkan lewat Schedule::call + Artisan::call (DI DALAM proses yang sama), bukan Schedule::command:
+// Schedule::command memakai proc_open() untuk tiap perintah, padahal banyak shared hosting (mis. Hostinger)
+// menutup proc_open/exec/shell_exec → perintah gagal diam-diam. Lihat docs/DECISIONS.md.
+Schedule::call(fn () => Artisan::call('kitaq:tick'))
+    ->name('kitaq:tick')->everyMinute()->withoutOverlapping(2);
+
+Schedule::call(fn () => Artisan::call('queue:work', [
+    '--stop-when-empty' => true, '--max-time' => 50, '--tries' => 3, '--timeout' => 45,
+]))->name('kitaq:queue-work')->everyMinute()->withoutOverlapping(2);
 
 Artisan::command('kitaq:backup', function (\App\Services\BackupService $backup) {
     $this->info('Backup: ' . $backup->run());
 })->purpose('Backup database (mysqldump atau ekspor per tabel) ke storage/app/backups, retensi 14 hari');
 
-Schedule::command('kitaq:backup')->dailyAt('01:30')->withoutOverlapping();
-Schedule::command('kitaq:prune')->dailyAt('02:00')->withoutOverlapping();
+Schedule::call(fn () => Artisan::call('kitaq:backup'))->name('kitaq:backup')->dailyAt('01:30')->withoutOverlapping();
+Schedule::call(fn () => Artisan::call('kitaq:prune'))->name('kitaq:prune')->dailyAt('02:00')->withoutOverlapping();
