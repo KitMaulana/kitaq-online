@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\View\View;
 
 /** Halaman publik ringan: panduan pasang PWA, cek perangkat, logo sekolah. */
@@ -14,9 +16,22 @@ class PublicController extends Controller
         return view('student.install');
     }
 
-    public function deviceCheck()
+    /**
+     * Halaman cek perangkat = berkas statis dengan skrip inline. CSP hanya mengizinkan skrip ber-nonce,
+     * jadi nonce dari SecurityHeaders disuntikkan ke setiap <script> (tanpa ini JS diblokir dan halaman macet).
+     */
+    public function deviceCheck(): Response
     {
-        return response()->file(public_path('cek-perangkat.html'), ['Content-Type' => 'text/html; charset=utf-8']);
+        $html = (string) file_get_contents(public_path('cek-perangkat.html'));
+        $html = preg_replace('/<script(?![^>]*\bsrc=)(?![^>]*\bnonce=)/i', '<script nonce="' . Vite::cspNonce() . '"', $html);
+
+        return response($html, 200, ['Content-Type' => 'text/html; charset=utf-8', 'Cache-Control' => 'no-store']);
+    }
+
+    /** Uji koneksi ringan untuk halaman Cek Perangkat (tanpa data, tanpa sesi). */
+    public function ping(): Response
+    {
+        return response('', 204, ['Cache-Control' => 'no-store']);
     }
 
     public function schoolLogo()

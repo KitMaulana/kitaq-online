@@ -26,6 +26,7 @@ Route::middleware('security.headers:app')->group(function () {
     Route::get('/pasang', [PublicController::class, 'install'])->name('student.install');
     Route::get('/cek-perangkat', [PublicController::class, 'deviceCheck'])->name('device-check');
     Route::get('/logo-sekolah', [PublicController::class, 'schoolLogo'])->name('school.logo');
+    Route::get('/api/ping', [PublicController::class, 'ping'])->middleware('throttle:60,1')->name('ping');
 });
 
 /* ---------- Instalasi darurat tanpa SSH (KITAQ_INSTALL_TOKEN) ---------- */
