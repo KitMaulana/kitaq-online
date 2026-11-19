@@ -49,7 +49,7 @@
     </x-ui.bulk-bar>
 
     <x-ui.modal wire:model="showForm" :title="($editingId ? 'Ubah ' : 'Tambah ') . strtolower($single)">
-        <form wire:submit="save" id="crud-form" class="form-grid">
+        <form wire:submit="save" id="crud-form-{{ $this->getId() }}" class="form-grid">
             @foreach ($fieldDefs as $key => $f)
                 @php $type = $f['type'] ?? 'text'; $err = $errors->first('form.' . $key); @endphp
                 <div @class(['full' => $f['full'] ?? false])>
@@ -72,7 +72,7 @@
         </form>
         <x-slot:footer>
             <x-ui.button variant="secondary" x-on:click="open = false">Batal</x-ui.button>
-            <x-ui.button type="submit" form="crud-form" icon="save" loading="save">Simpan</x-ui.button>
+            <x-ui.button type="submit" form="crud-form-{{ $this->getId() }}" icon="save" loading="save">Simpan</x-ui.button>
         </x-slot:footer>
     </x-ui.modal>
 
